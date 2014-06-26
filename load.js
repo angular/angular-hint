@@ -4,5 +4,7 @@
 // everything on by default
 
 var moduleNames = ['deedLib', 'controllerTrainer'];
-window.name = 'NG_DEFER_BOOTSTRAP';
-angular.resumeBootstrap(moduleNames);
+window.name = 'NG_DEFER_BOOTSTRAP!';
+angular.element(document).ready(function() {
+  angular.resumeBootstrap(moduleNames)
+});
