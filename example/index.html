@@ -1,0 +1,36 @@
+<!doctype html>
+<html ng-app="sampleApp">
+  <head>
+    <meta charset="utf-8">
+    <title>Controller Training Sample</title>
+
+    <script src="../bower_components/angular/angular.js"></script>
+    <script src="../bower_components/angular-route/angular-route.js"></script>
+    <script src="../hint.js"></script>
+
+    <script src="app.js"></script>
+    <script src="app-controller.js"></script>
+
+    <link rel="stylesheet" href="app.css">
+
+  </head>
+  <body>
+    <header class="header navbar navbar-inverse docs-navbar-primary">
+        <div class="container">
+            <div class="row">
+                <a class="brand navbar-brand" href="http://angularjs.org">
+                    <img class="logo" src="angularjs-for-header-only.svg">
+                </a>
+                <h4 class="text-center title">
+                    <a class="noLink" href="#questions/intro">
+                      My Controller Trainer
+                    </a>
+                </h4>
+            </div>
+        </div>
+    </header>
+    <div class="container">
+        <div ng-view></div>
+    </div>
+  </body>
+</html>
