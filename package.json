@@ -1,0 +1,30 @@
+{
+  "name": "angular-hint",
+  "version": "0.0.0",
+  "description": "run-time hinting for AngularJS applications",
+  "main": "hint.js",
+  "scripts": {
+    "test": "karma start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/angular/angular-hint.git"
+  },
+  "keywords": [
+    "angular",
+    "hint",
+    "lint",
+    "tool",
+    "quality"
+  ],
+  "author": "Brian Ford <btford@umich.edu>",
+  "license": "Apache 2.0",
+  "bugs": {
+    "url": "https://github.com/angular/angular-hint/issues"
+  },
+  "homepage": "https://github.com/angular/angular-hint",
+  "dependencies": {
+    "controller-training": "git://github.com/angular/angular-hint-dom",
+    "directive-director": "git://github.com/angular/angular-hint-directives"
+  }
+}
