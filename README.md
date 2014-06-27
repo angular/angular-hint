@@ -18,6 +18,12 @@ $ npm install
 $ ./build.sh
 ```
 
+## See Also
+
+angular-hint is composed of several small modules that you may want to use individually:
+
+* [angular-hint-directives](https://github.com/angular/angular-hint-directives)
+* [angular-hint-dom](https://github.com/angular/angular-hint-dom)
 
 ## License
 Apache 2.0
