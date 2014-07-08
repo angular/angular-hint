@@ -4,7 +4,8 @@
   "description": "run-time hinting for AngularJS applications",
   "main": "hint.js",
   "scripts": {
-    "test": "karma start"
+    "test": "karma start",
+    "build": "gulp"
   },
   "repository": {
     "type": "git",
@@ -26,5 +27,10 @@
   "dependencies": {
     "controller-training": "git://github.com/angular/angular-hint-dom",
     "directive-director": "git://github.com/angular/angular-hint-directives"
+  },
+  "devDependencies": {
+    "browserify": "^4.2.0",
+    "gulp": "^3.8.5",
+    "vinyl-source-stream": "^0.1.1"
   }
 }

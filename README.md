@@ -15,7 +15,7 @@ $ npm install
 ```
 
 ```shell
-$ ./build.sh
+$ npm run build
 ```
 
 ## See Also
