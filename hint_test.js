@@ -12,11 +12,17 @@ describe('angularHint', function() {
 
 
     it('should have an inclusive mode', function() {
-
+      //spyOn(console, 'log');
+      browser.get('http://localhost:8080/e2e/inclusiveHint/#/inclusiveHint');
+      //expect(console.log).toHaveBeenCalled();
     });
 
 
     it('should have an exclusive mode', function() {
+
+    });
+
+    it('should not bootstrap if ng-hint is not included', function() {
 
     });
   });
