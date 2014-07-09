@@ -26,7 +26,10 @@
   "homepage": "https://github.com/angular/angular-hint",
   "dependencies": {
     "controller-training": "git://github.com/angular/angular-hint-dom",
-    "directive-director": "git://github.com/angular/angular-hint-directives"
+    "directive-director": "git://github.com/angular/angular-hint-directives",
+    "karma": "^0.12.16",
+    "karma-chrome-launcher": "^0.1.4",
+    "karma-jasmine": "^0.1.5"
   },
   "devDependencies": {
     "browserify": "^4.2.0",
