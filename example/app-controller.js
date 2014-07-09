@@ -37,7 +37,8 @@ angular.module('sampleApp').
     * Also demonstrates catching asynchronous actions
     */
     $timeout(function() {
-        $('#remove').remove();
+       var elt = document.getElementById('remove');
+       elt.remove();
     }, 3000);
 
     /**
