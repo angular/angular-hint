@@ -2,11 +2,22 @@ html, body {
   position:relative;
   height:100%;
   width: 100%;
+  margin-top: 0px;
+  margin-left: 0px;
 }
 
 body {
   padding-bottom: 70px;
 }
+
+/**
+* Row Heading
+**/
+.header {
+  padding-left: 20px;
+  background-color:#666;
+}
+
 /**
 Button
 **/

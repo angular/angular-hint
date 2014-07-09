@@ -1,9 +1,9 @@
 angular.module('sampleApp', ['ngRoute']).
       config(['$routeProvider', function($routeProvider) {
-        $routeProvider.when('/training', {
+        $routeProvider.when('/example', {
           controller: 'SampleAppController',
           controllerAs: 'sampleAppCtrl',
           templateUrl: 'sampleApp.html'
         }).
-        otherwise({redirectTo: '/training'});
+        otherwise({redirectTo: '/example'});
   }]);
