@@ -7,3 +7,5 @@ angular.module('sampleInclusiveHint', ['ngRoute']).
         }).
         otherwise({redirectTo: '/inclusiveHint'});
   }]);
+
+
