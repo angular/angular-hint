@@ -11,51 +11,42 @@ var allModules = ['ngHintDirectives', 'ngHintDom'];
 window.name = 'NG_DEFER_BOOTSTRAP!';
 
 // determine which modules to load and resume bootstrap
-angular.element(document).ready(function() {
-  var selectedModules;
-  var elts;
-  var includeModules = function(modulesToInclude) {
-    var selected = modulesToInclude.map(function(name) {
-      return 'ngHint' + name[0].toUpperCase() + name.substring(1);
-    });
-    return selected;
-  };
+document.addEventListener('DOMContentLoaded', function maybeBootstrap() {
 
-  var excludeModules = function(modulesToExclude) {
-    var selected = allModules.filter(function(name) {
-      var notFound = true;
-      modulesToExclude.forEach(function(element) {
-        if(('ngHint' + element[0].toUpperCase() + element.substring(1)) == name) {
-          notFound = false;
-        }
-      });
-      if(notFound) {
-        return name;
-      }
-    });
-    return selected;
-  };
+  // we don't know if angular is loaded
+  if (!angular.resumeBootstrap) {
+    return setTimeout(maybeBootstrap, 1);
+  }
 
-  elts = document.querySelectorAll('[ng-hint-include]');
-  if(elts.length > 0) {
-    selectedModules = includeModules(elts[0].attributes['ng-hint-include'].value.split(' '));
+  var modules = [], elt;
+
+  if (elt = document.querySelector('[ng-hint-include]')) {
+    modules = hintModulesFromElement(elt).map(hintModuleName);
+  } else if (elt = document.querySelector('[ng-hint-exclude]')) {
+    modules = excludeModules(hintModulesFromElement(elt));
+  } else if (document.querySelector('[ng-hint]')) {
+    modules = allModules;
   }
-  else {
-    elts = document.querySelectorAll('[ng-hint-exclude]');
-    if(elts.length > 0) {
-      selectedModules = excludeModules(elts[0].attributes['ng-hint-exclude'].value.split(' '));
-    }
-    else {
-      elts = document.querySelectorAll('[ng-hint]');
-      if(elts.length > 0) {
-        selectedModules = allModules;
-      }
-    }
-  }
-  if(selectedModules != undefined) {
-    angular.resumeBootstrap(selectedModules);
-  }
-  else {
-    angular.resumeBootstrap();
-  }
+
+  angular.resumeBootstrap(modules);
 });
+
+
+function excludeModules(modulesToExclude) {
+  modulesToExclude = modulesToExclude.map(hintModuleName);
+  return allModules.filter(function(module) {
+    return modulesToExclude.indexOf(module) > -1;
+  });
+}
+
+function hintModulesFromElement (elt) {
+  return elt.attributes['ng-hint-include'].value.split(' ');
+}
+
+function hintModuleName(name) {
+  return 'ngHint' + title(name);
+}
+
+function title (str) {
+  return str[0].toUpperCase() + str.substr(1);
+}
