@@ -7,11 +7,31 @@ require('angular-hint-dom');
 require('angular-hint-directives');
 
 var allModules = ['ngHintDirectives', 'ngHintDom'];
+var isTest = false;
+if(window.name === 'NG_DEFER_BOOTSTRAP!') {
+  isTest = true;
+  var originalResumeBootstrap;
+  Object.defineProperty(angular, 'resumeBootstrap', {
+    get: function() {
+      return function(modules) {
+        return(originalResumeBootstrap.call(angular, modules.concat(loadHintModules())))
+      }
+    },
+    set: function(resumeBootstrap) {
+      originalResumeBootstrap = resumeBootstrap;
 
-window.name = 'NG_DEFER_BOOTSTRAP!';
+    }
+  });
+  console.log = function(message) {
+    var log = document.getElementById('console');
+    log.innerHTML = message;
+  }
+}
+else {
+  window.name = 'NG_DEFER_BOOTSTRAP!';
+}
 
-// determine which modules to load and resume bootstrap
-angular.element(document).ready(function() {
+function loadHintModules() {
   var selectedModules;
   var elts;
   var includeModules = function(modulesToInclude) {
@@ -20,7 +40,6 @@ angular.element(document).ready(function() {
     });
     return selected;
   };
-
   var excludeModules = function(modulesToExclude) {
     var selected = allModules.filter(function(name) {
       var notFound = true;
@@ -35,7 +54,6 @@ angular.element(document).ready(function() {
     });
     return selected;
   };
-
   elts = document.querySelectorAll('[ng-hint-include]');
   if(elts.length > 0) {
     selectedModules = includeModules(elts[0].attributes['ng-hint-include'].value.split(' '));
@@ -52,10 +70,18 @@ angular.element(document).ready(function() {
       }
     }
   }
-  if(selectedModules != undefined) {
-    angular.resumeBootstrap(selectedModules);
-  }
-  else {
-    angular.resumeBootstrap();
+  return selectedModules;
+};
+
+// determine which modules to load and resume bootstrap
+angular.element(document).ready(function() {
+  if(!isTest) {
+    var modules = loadHintModules();
+    if(modules != undefined) {
+      angular.resumeBootstrap(modules);
+    }
+    else {
+      angular.resumeBootstrap();
+    }
   }
 });
