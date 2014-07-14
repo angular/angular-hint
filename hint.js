@@ -35,8 +35,10 @@ else {
   window.name = 'NG_DEFER_BOOTSTRAP!';
 }
 
-function maybeBootstrap() {
+// determine which modules to load and resume bootstrap
+document.addEventListener('DOMContentLoaded', maybeBootstrap());
 
+function maybeBootstrap() {
   // we don't know if angular is loaded
   if (!angular.resumeBootstrap) {
     return setTimeout(maybeBootstrap, 1);
@@ -58,10 +60,6 @@ function loadModules() {
   }
   return modules;
 };
-
-// determine which modules to load and resume bootstrap
-document.addEventListener('DOMContentLoaded', maybeBootstrap());
-
 
 function excludeModules(modulesToExclude) {
   modulesToExclude = modulesToExclude.map(hintModuleName);
