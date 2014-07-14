@@ -1,12 +1,14 @@
-
-// decorate angular.bootstrap to check for ng-hint=
-//
-// everything on by default
-
+//Load angular hint modules
 require('angular-hint-dom');
 require('angular-hint-directives');
 
+//List of all possible modules
+//The default ng-hint behavior loads all modules
 var allModules = ['ngHintDirectives', 'ngHintDom'];
+
+//Determine whether this run is by protractor.
+//If protractor is running, the bootstrap will already be deferred.
+//In this case resumeBootstrap should be patched to load the hint modules.
 var isTest = false;
 if(window.name === 'NG_DEFER_BOOTSTRAP!') {
   isTest = true;
@@ -22,11 +24,13 @@ if(window.name === 'NG_DEFER_BOOTSTRAP!') {
 
     }
   });
+  //For test cases, log the console to an HTML element that can be retrieved by protractor.
   console.log = function(message) {
     var log = document.getElementById('console');
     log.innerHTML = message;
   }
 }
+//If this is not a test, defer bootstrapping
 else {
   window.name = 'NG_DEFER_BOOTSTRAP!';
 }
