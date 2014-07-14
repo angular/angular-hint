@@ -22,8 +22,13 @@ $ npm run build
 
 angular-hint is composed of several small modules that you may want to use individually:
 
+* [angular-hint-controllers](https://github.com/angular/angular-hint-controllers)
 * [angular-hint-directives](https://github.com/angular/angular-hint-directives)
 * [angular-hint-dom](https://github.com/angular/angular-hint-dom)
+* [angular-hint-events](https://github.com/angular/angular-hint-events)
+* [angular-hint-interpolation](https://github.com/angular/angular-hint-interpolation)
+* [angular-hint-log](https://github.com/angular/angular-hint-log)
+* [angular-hint-modules](https://github.com/angular/angular-hint-modules)
 
 ## License
 Apache 2.0
