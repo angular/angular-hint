@@ -77,12 +77,7 @@ function excludeModules(modulesToExclude) {
 }
 
 function hintModulesFromElement (elt) {
-  var hintMods;
-  hintMods = elt.attributes['ng-hint-include'];
-  if(!hintMods) {
-    hintMods = elt.attributes['ng-hint-exclude']
-  }
-  return hintMods.value.split(' ');
+  return (elt.attributes['ng-hint-include'] || elt.attributes['ng-hint-exclude']).value.split(' ');
 }
 
 function hintModuleName(name) {
