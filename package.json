@@ -25,17 +25,16 @@
   },
   "homepage": "https://github.com/angular/angular-hint",
   "dependencies": {
-    "browserify": "^4.2.0",
     "controller-training": "git://github.com/angular/angular-hint-dom",
-    "directive-director": "git://github.com/angular/angular-hint-directives",
-    "gulp": "^3.8.5",
-    "karma": "^0.12.16",
-    "karma-chrome-launcher": "^0.1.4",
-    "karma-jasmine": "^0.1.5"
+    "directive-director": "git://github.com/angular/angular-hint-directives"
   },
   "devDependencies": {
     "browserify": "^4.2.0",
     "gulp": "^3.8.5",
+    "http-server": "^0.6.1",
+    "protractor": "^1.0.0-rc4",
+    "routes-router": "^3.3.0",
+    "st": "^0.5.1",
     "vinyl-source-stream": "^0.1.1"
   }
 }
