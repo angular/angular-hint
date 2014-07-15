@@ -28,10 +28,10 @@ if(window.name === 'NG_DEFER_BOOTSTRAP!') {
 //If this is not a test, defer bootstrapping
 else {
   window.name = 'NG_DEFER_BOOTSTRAP!';
-}
 
-// determine which modules to load and resume bootstrap
-document.addEventListener('DOMContentLoaded', maybeBootstrap());
+  // determine which modules to load and resume bootstrap
+  document.addEventListener('DOMContentLoaded', maybeBootstrap);
+}
 
 function maybeBootstrap() {
   // we don't know if angular is loaded
