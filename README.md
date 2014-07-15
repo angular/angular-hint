@@ -1,4 +1,4 @@
-# angular-hint
+# angular-hint [![Build Status](https://travis-ci.org/angular/angular-hint.svg?branch=master)](https://travis-ci.org/angular/angular-hint)
 
 Runtime hinting for AngularJS.
 

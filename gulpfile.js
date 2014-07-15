@@ -34,7 +34,11 @@ function startServer() {
 
 gulp.task('protractor', ['webdriver'], function (cb) {
   var server = startServer();
-  exec('./node_modules/.bin/protractor protractor-conf.js', function (err, stdout, stderr) {
+  var cmd = './node_modules/.bin/protractor protractor' +
+      (process.env.TRAVIS_JOB_NUMBER ? '-travis' : '') +
+      '.conf.js';
+
+  exec(cmd, function (err, stdout, stderr) {
     server.close();
     if (err) {
       console.log(stdout, stderr);

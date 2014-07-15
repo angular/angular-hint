@@ -5,12 +5,17 @@ node_js:
 env:
   global:
     - BROWSER_PROVIDER_READY_FILE=/tmp/sauce-connect-ready
-    - LOGS_DIR=/tmp/angular-dom-interceptor-build/logs
+    - LOGS_DIR=/tmp/angular-hint-build/logs
     - SAUCE_USERNAME=angular-ci
     - SAUCE_ACCESS_KEY=9b988f434ff8-fbca-8aa4-4ae3-35442987
 
-before_script:
+install:
+  - mkdir -p $LOGS_DIR
   - ./scripts/sauce_connect_setup.sh
+  - npm install
   - npm install -g bower
   - bower install angular angular-route
   - ./scripts/wait_for_browser_provider.sh
+
+script:
+  - ./scripts/testonsauce.sh
