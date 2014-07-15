@@ -34,7 +34,7 @@ function startServer() {
 
 gulp.task('protractor', ['webdriver'], function (cb) {
   var server = startServer();
-  exec('./node_modules/.bin/protractor conf.js', function (err, stdout, stderr) {
+  exec('./node_modules/.bin/protractor protractor-conf.js', function (err, stdout, stderr) {
     server.close();
     if (err) {
       console.log(stdout, stderr);
