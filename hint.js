@@ -72,12 +72,17 @@ function loadModules() {
 function excludeModules(modulesToExclude) {
   modulesToExclude = modulesToExclude.map(hintModuleName);
   return allModules.filter(function(module) {
-    return modulesToExclude.indexOf(module) > -1;
+    return modulesToExclude.indexOf(module) == -1;
   });
 }
 
 function hintModulesFromElement (elt) {
-  return elt.attributes['ng-hint-include'].value.split(' ');
+  var hintMods;
+  hintMods = elt.attributes['ng-hint-include'];
+  if(!hintMods) {
+    hintMods = elt.attributes['ng-hint-exclude']
+  }
+  return hintMods.value.split(' ');
 }
 
 function hintModuleName(name) {
