@@ -1,27 +1,24 @@
-//Load angular hint modules
+// Load angular hint modules
 require('angular-hint-dom');
 require('angular-hint-directives');
 
-//List of all possible modules
-//The default ng-hint behavior loads all modules
+// List of all possible modules
+// The default ng-hint behavior loads all modules
 var allModules = ['ngHintDirectives', 'ngHintDom'];
 
-//Determine whether this run is by protractor.
-//If protractor is running, the bootstrap will already be deferred.
-//In this case resumeBootstrap should be patched to load the hint modules.
-var isTest = false;
-if(window.name === 'NG_DEFER_BOOTSTRAP!') {
-  isTest = true;
+// Determine whether this run is by protractor.
+// If protractor is running, the bootstrap will already be deferred.
+// In this case `resumeBootstrap` should be patched to load the hint modules.
+if (window.name === 'NG_DEFER_BOOTSTRAP!') {
   var originalResumeBootstrap;
   Object.defineProperty(angular, 'resumeBootstrap', {
     get: function() {
       return function(modules) {
-        return(originalResumeBootstrap.call(angular, modules.concat(loadModules())));
-      }
+        return originalResumeBootstrap.call(angular, modules.concat(loadModules()));
+      };
     },
     set: function(resumeBootstrap) {
       originalResumeBootstrap = resumeBootstrap;
-
     }
   });
 }
@@ -54,7 +51,7 @@ function loadModules() {
     modules = allModules;
   }
   return modules;
-};
+}
 
 function excludeModules(modulesToExclude) {
   modulesToExclude = modulesToExclude.map(hintModuleName);
@@ -71,6 +68,6 @@ function hintModuleName(name) {
   return 'ngHint' + title(name);
 }
 
-function title (str) {
+function title(str) {
   return str[0].toUpperCase() + str.substr(1);
 }
