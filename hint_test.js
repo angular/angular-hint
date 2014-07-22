@@ -38,7 +38,7 @@ describe('angularHint', function() {
     it('should warn if there is no ng-hint attribute', function() {
       browser.get('noHint/');
       expect(element(by.id('console')).getText())
-          .not.toContain('Info: ngHint is included on the page, but is not active because there is no `ng-hint` attribute present');
+          .toBe('Info: ngHint is included on the page, but is not active because there is no `ng-hint` attribute present');
     });
   });
 });
