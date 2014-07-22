@@ -25,8 +25,8 @@
   },
   "homepage": "https://github.com/angular/angular-hint",
   "dependencies": {
-    "controller-training": "git://github.com/angular/angular-hint-dom",
-    "directive-director": "git://github.com/angular/angular-hint-directives"
+    "angular-hint-controllers": "0.0.0",
+    "angular-hint-log": "0.0.0"
   },
   "devDependencies": {
     "browserify": "^4.2.0",

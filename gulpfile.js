@@ -42,6 +42,8 @@ gulp.task('protractor', ['webdriver'], function (cb) {
     server.close();
     if (err) {
       console.log(stdout, stderr);
+    } else {
+      console.log(stdout);
     }
     cb(err);
   });

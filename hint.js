@@ -1,10 +1,10 @@
 // Load angular hint modules
-require('angular-hint-dom');
-require('angular-hint-directives');
+angular.hint = require('angular-hint-log');
+require('angular-hint-controllers');
 
 // List of all possible modules
 // The default ng-hint behavior loads all modules
-var allModules = ['ngHintDirectives', 'ngHintDom'];
+var allModules = ['ngHintController'];
 
 // Determine whether this run is by protractor.
 // If protractor is running, the bootstrap will already be deferred.
@@ -44,11 +44,16 @@ function loadModules() {
   var modules = [], elt;
 
   if (elt = document.querySelector('[ng-hint-include]')) {
-    modules = hintModulesFromElement(elt).map(hintModuleName);
+    modules = hintModulesFromElement(elt).map(hintModuleName).filter(function (name) {
+      return (allModules.indexOf(name) > -1) ||
+          angular.hint.logMessage('Module ' + name + ' could not be found');
+    });
   } else if (elt = document.querySelector('[ng-hint-exclude]')) {
     modules = excludeModules(hintModulesFromElement(elt));
   } else if (document.querySelector('[ng-hint]')) {
     modules = allModules;
+  } else {
+    angular.hint.logMessage('Info: ngHint is included on the page, but is not active because there is no `ng-hint` attribute present');
   }
   return modules;
 }
