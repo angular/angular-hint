@@ -1,8 +1,10 @@
 language: node_js
 node_js:
   - 0.10
-
 env:
+  matrix:
+    - VERSION=1.2
+    - VERSION=1.3
   global:
     - BROWSER_PROVIDER_READY_FILE=/tmp/sauce-connect-ready
     - LOGS_DIR=/tmp/angular-hint-build/logs
@@ -14,7 +16,7 @@ install:
   - ./scripts/sauce_connect_setup.sh
   - npm install
   - npm install -g bower
-  - bower install angular angular-route
+  - ./bower-install.sh
   - ./scripts/wait_for_browser_provider.sh
 
 script:
