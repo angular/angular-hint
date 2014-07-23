@@ -1,18 +1,28 @@
 <!doctype html>
-<html ng-app="sampleExclusiveHint" ng-hint-exclude="dom">
+<html ng-app="sampleExclusiveHint" ng-hint-exclude="controller">
   <head>
     <meta charset="utf-8">
     <title>Angular Exclusive Hint Example</title>
-
+  </head>
+  <body ng-controller="HintController">
+    <div>Module output: </div>
+    <div id="console"></div>
     <script src="../../bower_components/angular/angular.js"></script>
     <script src="../../bower_components/angular-route/angular-route.js"></script>
     <script src="../../dist/hint.js"></script>
     <script src="../util.js"></script>
-
-    <script src="app.js"></script>
-    <script src="app-controller.js"></script>
-  </head>
-  <body>
-    <div ng-view></div>
+    <div id="test">
+      This is a test div that the controller will attempt to remove. Such manipulation
+      of the DOM will cause ng-hint-dom to log a message if it is loaded correctly
+      by the ng-hint-exclude tag. Only ng-hint-controller is listed in the ng-hint-exclude. Therefore,
+      all other modules should be loaded.
+    </div>
+    <script>
+      angular.module('sampleExclusiveHint', []);
+      angular.module('sampleExclusiveHint').
+        controller('HintController', ['$scope', function($scope) {
+          var element = document.getElementById('test');
+      }]);
+    </script>
   </body>
 </html>
