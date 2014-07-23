@@ -25,7 +25,7 @@
   },
   "homepage": "https://github.com/angular/angular-hint",
   "dependencies": {
-    "angular-hint-controllers": "0.0.0",
+    "angular-hint-controllers": "0.1.0",
     "angular-hint-dom": "0.0.0",
     "angular-hint-log": "0.0.0"
   },

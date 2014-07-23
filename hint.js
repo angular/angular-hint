@@ -5,7 +5,7 @@ require('angular-hint-dom');
 
 // List of all possible modules
 // The default ng-hint behavior loads all modules
-var allModules = ['ngHintController', 'ngHintDom'];
+var allModules = ['ngHintControllers', 'ngHintDom'];
 
 // Determine whether this run is by protractor.
 // If protractor is running, the bootstrap will already be deferred.
