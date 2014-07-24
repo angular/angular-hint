@@ -38,7 +38,119 @@ Angular-Hint Conventions
 
   To use ngHintLog, see its [README.md](https://github.com/angular/angular-hint-log#angular-hint-log).
 
-  4.  Module Publishing
+  4. Module Testing
+
+  Each ngHint module should provide its own unit tests. These tests should also be run under
+  continuous integration using TravisCI, and on multiple browsers using SauceLabs. Unit tests
+  may be run locally using Karma and through SauceLabs on TravisCI by using the following testing configuration:
+
+  In karma.conf.js:
+
+  ```javascript
+    module.exports = function(config) {
+      config.set({
+        frameworks: ['browserify', 'jasmine'],
+        files: [
+          'bower_components/angular/angular.js',
+          'bower_components/angular-mocks/angular-mocks.js',
+          'your-hint-module.js',
+          'your-hint_test.js'
+        ],
+        exclude: [
+        ],
+        preprocessors: {
+          'your-hint-module.js': ['browserify']
+        },
+        browsers: ['Chrome'],
+        browserify: {
+          debug: true
+        }
+      });
+    };
+  ```
+
+  In a second karma-sauce.conf.js for testing with SauceLabs:
+
+  ```javascript
+    var baseConfig = require('./karma.conf.js');
+    module.exports = function(config) {
+        baseConfig(config);
+        var customLaunchers = {
+        'SL_Chrome': {
+          base: 'SauceLabs',
+          browserName: 'chrome',
+          version: '35'
+        },
+        'SL_Firefox': {
+          base: 'SauceLabs',
+          browserName: 'firefox',
+          version: '26'
+        },
+        'SL_Safari': {
+          base: 'SauceLabs',
+          browserName: 'safari',
+          platform: 'OS X 10.9',
+          version: '7'
+        }
+      };
+      config.set({
+        sauceLabs: {
+          testName: 'Hint Log Unit Tests',
+          startConnect: true,
+          options: {
+            'selenium-version': '2.37.0'
+          }
+        },
+        customLaunchers: customLaunchers,
+        browsers: Object.keys(customLaunchers),
+        reporters: ['dots', 'saucelabs'],
+        singleRun: true
+      });
+      if (process.env.TRAVIS) {
+        config.sauceLabs.build = 'TRAVIS #' + process.env.TRAVIS_BUILD_NUMBER + ' (' + process.env.TRAVIS_BUILD_ID + ')';
+        config.sauceLabs.tunnelIdentifier = process.env.TRAVIS_JOB_NUMBER;
+
+        process.env.SAUCE_ACCESS_KEY = process.env.SAUCE_ACCESS_KEY.split('').reverse().join('');
+        config.transports = ['xhr-polling'];
+      }
+    };
+  ```
+
+  In package.json:
+
+  ```javascript
+  "scripts": {
+    "test": "karma start karma-sauce.conf.js"
+  },
+  "dependencies": {
+    "karma-sauce-launcher": "~0.2.0"
+  }
+  ```
+
+  In .travis.yml:
+  ```javascript
+    language: node_js
+    node_js:
+      - 0.10
+
+    env:
+      global:
+        - BROWSER_PROVIDER_READY_FILE=/tmp/sauce-connect-ready
+        - LOGS_DIR=/tmp/your-module-here/logs
+        - SAUCE_USERNAME=YOUR_SAUCE_CREDENTIALS
+        - SAUCE_ACCESS_KEY=YOUR_SAUCE_ACCESS_KEY
+
+    before_script:
+      - npm install -g bower
+      - bower install angular angular-mocks
+      - npm install -g karma-cli
+  ```
+  To use sauce labs locally, make sure you have set up appropriate credentials.
+
+  To run karma locally use `karma start` and to run the sauce labs configuration use `karma
+  start karma-sauce.conf.js`
+
+  5.  Module Publishing
 
   All AngularHint modules should be published as npm packages.
 
@@ -62,6 +174,6 @@ Angular-Hint Conventions
      ```
      updates a minor node version.
 
-  5. Module Loading
+  6. Module Loading
 
   To be included in AngularHint, an ngHintModule needs to be included in the `allModules` list in `hint.js`. Submit a PR request updating this array as well as the package.json dependency of your ngHint module to this repository to allow your ngHint module to be loaded using the `ng-hint` directives.
