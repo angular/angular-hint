@@ -24,13 +24,13 @@ describe('angularHint', function() {
     it('should have an inclusive mode', function() {
       browser.get('inclusiveHint/');
       expect(element(by.id('console')).getText())
-        .toBe('getElementById');
+        .toContain('getElementById');
     });
 
     it('should have an exclusive mode', function() {
       browser.get('exclusiveHint/');
       expect(element(by.id('console')).getText())
-        .toBe('getElementById');
+        .toContain('getElementById');
     });
 
     it('should warn if there is no ng-hint attribute', function() {
