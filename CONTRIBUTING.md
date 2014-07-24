@@ -41,7 +41,8 @@ Angular-Hint Conventions
   4. Module Testing
 
   Each ngHint module should provide its own unit tests. These tests should also be run under
-  continuous integration using TravisCI, and on multiple browsers using SauceLabs. Unit tests
+  continuous integration using TravisCI, and on multiple browsers using SauceLabs. Last, the TravisCI tests
+  should test versions 1.2 and 1.3 of AngularJS. Unit tests
   may be run locally using Karma and through SauceLabs on TravisCI by using the following testing configuration:
 
   In karma.conf.js:
@@ -132,20 +133,38 @@ Angular-Hint Conventions
     language: node_js
     node_js:
       - 0.10
-
     env:
+      matrix:
+        - VERSION=1.2
+        - VERSION=1.3
       global:
         - BROWSER_PROVIDER_READY_FILE=/tmp/sauce-connect-ready
-        - LOGS_DIR=/tmp/your-module-here/logs
-        - SAUCE_USERNAME=YOUR_SAUCE_CREDENTIALS
-        - SAUCE_ACCESS_KEY=YOUR_SAUCE_ACCESS_KEY
-
-    before_script:
+        - LOGS_DIR=/tmp/angular-hint-controllers-build/logs
+        - SAUCE_USERNAME=YOUR_SAUCE_USERNAME
+        - SAUCE_ACCESS_KEY=YOUR_SAUCE_KEY
+    install:
+      - npm install
       - npm install -g bower
-      - bower install angular angular-mocks
+      - ./bower-install.sh
       - npm install -g karma-cli
   ```
+
   To use sauce labs locally, make sure you have set up appropriate credentials.
+
+  Additionally, to test both AngularJS 1.2 and 1.3, you must set up a `bower-install.sh` script
+  to install the appropriate AngularJS version for each test.
+
+  In bower-install.sh:
+  ```javascript
+  #!/bin/bash
+  bower install --force angular#$VERSION angular-mocks#$VERSION
+  ```
+
+  You may also install any other angular modules that depend on versioning such as angular-route
+  in this way.
+
+  After creating this script, be sure to run `chmod +x bower-install.sh` to make the file
+  executable.
 
   To run karma locally use `karma start` and to run the sauce labs configuration use `karma
   start karma-sauce.conf.js`
