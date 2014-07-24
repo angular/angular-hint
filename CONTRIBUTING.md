@@ -33,10 +33,35 @@ Angular-Hint Conventions
 
   3. Message Logging
 
-  All ngHint modules should use ngHintLog to log warnings. This creates a standard look and feel for all Angular-Hint messages.
+  All ngHint modules should use ngHintLog to log warnings. This creates a standard pipeline for
+  all AngularHint messages.
 
   To use ngHintLog, see its [README.md](https://github.com/angular/angular-hint-log#angular-hint-log).
 
-  4. Module Loading
+  4.  Module Publishing
+
+  All AngularHint modules should be published as npm packages.
+
+  To publish an npm package:
+  1) Check that your package.json is up to date and informative.
+  2) Ensure that you have set up an [npm account](https://www.npmjs.org/), and use your credentials to log in on your machine.
+  3) Tag the version of your module using `git tag` and push that tag to GitHub `git push --tags`. For instance:
+    ```javascript
+    git tag v0.0.0
+    git push --tags
+    ```
+  4) Use `npm publish` inside the module directory to publish the module
+  5) Use the [semver](http://semver.org/) conventions to update versions when appropriate.
+     Use pre-1.0 tags to indicate the development stage.
+     Use npm commands to update versions. For example:
+     ``` javascript
+     npm version minor
+     git push
+     git push --tags
+     npm publish
+     ```
+     updates a minor node version.
+
+  5. Module Loading
 
   To be included in AngularHint, an ngHintModule needs to be included in the `allModules` list in `hint.js`. Submit a PR request updating this array as well as the package.json dependency of your ngHint module to this repository to allow your ngHint module to be loaded using the `ng-hint` directives.
