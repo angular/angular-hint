@@ -28,6 +28,7 @@
     "angular-hint-controllers": "0.1.0",
     "angular-hint-directives": "0.0.0",
     "angular-hint-dom": "0.1.0",
+    "angular-hint-events": "^0.1.0",
     "angular-hint-log": "0.0.0"
   },
   "devDependencies": {
