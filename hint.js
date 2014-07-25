@@ -1,5 +1,7 @@
-// Load angular hint modules
+//Create pipe for all hint messages from different modules
 angular.hint = require('angular-hint-log');
+
+// Load angular hint modules
 require('angular-hint-controllers');
 require('angular-hint-directives');
 require('angular-hint-dom');
