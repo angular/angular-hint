@@ -166,6 +166,9 @@ Angular-Hint Conventions
   After creating this script, be sure to run `chmod +x bower-install.sh` to make the file
   executable.
 
+  To show that your tests are running on TravisCI, add the TravisCI badge to the top of your
+  modules README file: [![Build Status](https://travis-ci.org/angular/angular-hint.svg?branch=master)](https://travis-ci.org/angular/angular-hint)
+
   To run karma locally use `karma start` and to run the sauce labs configuration use `karma
   start karma-sauce.conf.js`
 
