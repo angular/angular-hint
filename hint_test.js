@@ -30,6 +30,9 @@ describe('angularHint', function() {
     it('should have an exclusive mode', function() {
       browser.get('exclusiveHint/');
       expect(element(by.id('console')).getText()).toContain('getElementById');
+      expect(element(by.id('console')).getText()).toContain('Variable "increment" called on DIV ' +
+        'element does not exist in that scope. Event directive found on [object HTMLDivElement] ' +
+        'in [object Object] scope');
       expect(element(by.id('console')).getText()).not.toContain('ng-repeat');
     });
 
