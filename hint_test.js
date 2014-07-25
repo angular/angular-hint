@@ -29,8 +29,8 @@ describe('angularHint', function() {
 
     it('should have an exclusive mode', function() {
       browser.get('exclusiveHint/');
-      expect(element(by.id('console')).getText())
-        .toContain('getElementById');
+      expect(element(by.id('console')).getText()).toContain('getElementById');
+      expect(element(by.id('console')).getText()).not.toContain('ng-repeat');
     });
 
     it('should warn if there is no ng-hint attribute', function() {

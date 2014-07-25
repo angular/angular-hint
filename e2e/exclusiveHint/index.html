@@ -1,5 +1,5 @@
 <!doctype html>
-<html ng-app="sampleExclusiveHint" ng-hint-exclude="controller">
+<html ng-app="sampleExclusiveHint" ng-hint-exclude="directives">
   <head>
     <meta charset="utf-8">
     <title>Angular Exclusive Hint Example</title>
@@ -14,8 +14,14 @@
     <div id="test">
       This is a test div that the controller will attempt to remove. Such manipulation
       of the DOM will cause ng-hint-dom to log a message if it is loaded correctly
-      by the ng-hint-exclude tag. Only ng-hint-controller is listed in the ng-hint-exclude. Therefore,
-      all other modules should be loaded.
+      by the ng-hint-exclude tag. Only ng-hint-directives is listed in the ng-hint-exclude. Therefore,
+      all other modules including ng-hint-dom should be loaded.
+    </div>
+    <div>
+      This div has a misspelled ng-repeat that ng-hint-directives would hint about if it was not excluded.
+      <ul>
+        <li ng-repaet="i in [1,2,3,4]">{{i}}</li>
+      </ul>
     </div>
     <script>
       angular.module('sampleExclusiveHint', []);
