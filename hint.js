@@ -49,10 +49,7 @@ function loadModules() {
   var modules = [], elt;
 
   if (elt = document.querySelector('[ng-hint-include]')) {
-    modules = hintModulesFromElement(elt).map(hintModuleName).filter(function (name) {
-      return (allModules.indexOf(name) > -1) ||
-          angular.hint.logMessage('Module ' + name + ' could not be found');
-    });
+    modules = hintModulesFromElement(elt);
   } else if (elt = document.querySelector('[ng-hint-exclude]')) {
     modules = excludeModules(hintModulesFromElement(elt));
   } else if (document.querySelector('[ng-hint]')) {
@@ -64,14 +61,19 @@ function loadModules() {
 }
 
 function excludeModules(modulesToExclude) {
-  modulesToExclude = modulesToExclude.map(hintModuleName);
   return allModules.filter(function(module) {
     return modulesToExclude.indexOf(module) == -1;
   });
 }
 
 function hintModulesFromElement (elt) {
-  return (elt.attributes['ng-hint-include'] || elt.attributes['ng-hint-exclude']).value.split(' ');
+  var selectedModules = (elt.attributes['ng-hint-include']
+    || elt.attributes['ng-hint-exclude']).value.split(' ');
+
+  return selectedModules.map(hintModuleName).filter(function (name) {
+    return (allModules.indexOf(name) > -1) ||
+      angular.hint.logMessage('Module ' + name + ' could not be found');
+  });
 }
 
 function hintModuleName(name) {

@@ -9,6 +9,9 @@ describe('angularHint', function() {
       browser.get('includeWrongModuleName/');
       expect(element(by.id('console')).getText())
           .toBe('Module ngHintWrongModuleName could not be found');
+      browser.get('excludeWrongModuleName/');
+      expect(element(by.id('console')).getText())
+          .toBe('Module ngHintExcludeWrongModuleName could not be found');
     });
 
     // TODO: uncomment these when other angular-hint modules besides hint-controllers
