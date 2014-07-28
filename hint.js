@@ -7,11 +7,12 @@ require('angular-hint-directives');
 require('angular-hint-dom');
 require('angular-hint-events');
 require('angular-hint-interpolation');
+require('angular-hint-modules');
 
 // List of all possible modules
 // The default ng-hint behavior loads all modules
 var allModules = ['ngHintControllers', 'ngHintDirectives', 'ngHintDom', 'ngHintEvents',
-  'ngHintInterpolation'];
+  'ngHintInterpolation', 'ngHintModules'];
 
 // Determine whether this run is by protractor.
 // If protractor is running, the bootstrap will already be deferred.
