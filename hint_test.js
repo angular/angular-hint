@@ -14,21 +14,32 @@ describe('angularHint', function() {
           .toBe('Module ngHintExcludeWrongModuleName could not be found');
     });
 
-    // TODO: uncomment these when other angular-hint modules besides hint-controllers
-    //       are updated to use the new hint-log
 
-    // it('should include all modules by ng-hint default', function() {
-    //   browser.get('allHint/#/allHint');
-    //   expect(element(by.id('title')).getText()).toBe('Angular Hint Example');
-    //   expect(element(by.id('console')).getText()).toContain('Angular best practices are to manipulate the DOM in the view.');
-    //   expect(element(by.id('console')).getText()).toContain('Directive');
-    // });
+    it('should include all modules by ng-hint default', function() {
+      browser.get('allHint/');
+      //angular-hint-controllers
+      expect(element(by.id('console')).getText()).toContain('Controller best practices is for a ' +
+        'controller name to end with \'Controller\'. Check the name of Hint');
+      //angular-hint-directives
+      expect(element(by.id('console')).getText()).toContain('ng-repeat');
+      //angular-hint-dom
+      expect(element(by.id('console')).getText()).toContain('getElementById');
+      //angular-hint-events
+      expect(element(by.id('console')).getText()).toContain('Variable "increment" called on DIV ' +
+        'element does not exist in that scope. Event directive found on [object HTMLDivElement] ' +
+        'in [object Object] scope');
+      //angular-hint-interpolation
+      expect(element(by.id('console')).getText()).toContain('was found to be undefined in');
+      expect(element(by.id('console')).getText()).toContain('Module "sample" was created but never loaded');
+    });
+
 
     it('should have an inclusive mode', function() {
       browser.get('inclusiveHint/');
       expect(element(by.id('console')).getText())
         .toContain('getElementById');
     });
+
 
     it('should have an exclusive mode', function() {
       browser.get('exclusiveHint/');
@@ -38,6 +49,7 @@ describe('angularHint', function() {
         'in [object Object] scope');
       expect(element(by.id('console')).getText()).not.toContain('ng-repeat');
     });
+
 
     it('should warn if there is no ng-hint attribute', function() {
       browser.get('noHint/');
