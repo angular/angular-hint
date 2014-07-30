@@ -32,8 +32,7 @@ describe('angularHint', function() {
       expect(element(by.id('console')).getText()).toContain('was found to be undefined in');
       //angular-hint-modules
       expect(element(by.id('console')).getText()).toContain('Module "sampleAllHint" was created ' +
-        'but never loaded. Multiple modules with name "sampleAllHint" are being created and they' +
-        ' will overwrite each other.');
+        'but never loaded.');
     });
 
 
