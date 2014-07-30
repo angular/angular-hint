@@ -11,7 +11,7 @@ describe('angularHint', function() {
           .toBe('Angular Hint: General Module ngHintWrongModuleName could not be found');
       browser.get('excludeWrongModuleName/');
       expect(element(by.id('console')).getText())
-          .toBe('Angular Hint: General Module ngHintExcludeWrongModuleName could not be found');
+          .toContain('Angular Hint: General Module ngHintExcludeWrongModuleName could not be found');
     });
 
 
@@ -30,7 +30,10 @@ describe('angularHint', function() {
         'in [object Object] scope');
       //angular-hint-interpolation
       expect(element(by.id('console')).getText()).toContain('was found to be undefined in');
-      // expect(element(by.id('console')).getText()).toContain('Module "sample" was created but never loaded');
+      //angular-hint-modules
+      expect(element(by.id('console')).getText()).toContain('Module "sampleAllHint" was created ' +
+        'but never loaded. Multiple modules with name "sampleAllHint" are being created and they' +
+        ' will overwrite each other.');
     });
 
 
