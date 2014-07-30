@@ -8,10 +8,10 @@ describe('angularHint', function() {
     it('should warn if ng-hint is called with unknown options', function() {
       browser.get('includeWrongModuleName/');
       expect(element(by.id('console')).getText())
-          .toBe('Module ngHintWrongModuleName could not be found');
+          .toBe('Angular Hint: General Module ngHintWrongModuleName could not be found');
       browser.get('excludeWrongModuleName/');
       expect(element(by.id('console')).getText())
-          .toBe('Module ngHintExcludeWrongModuleName could not be found');
+          .toBe('Angular Hint: General Module ngHintExcludeWrongModuleName could not be found');
     });
 
 
@@ -30,7 +30,7 @@ describe('angularHint', function() {
         'in [object Object] scope');
       //angular-hint-interpolation
       expect(element(by.id('console')).getText()).toContain('was found to be undefined in');
-      expect(element(by.id('console')).getText()).toContain('Module "sample" was created but never loaded');
+      // expect(element(by.id('console')).getText()).toContain('Module "sample" was created but never loaded');
     });
 
 
@@ -54,7 +54,7 @@ describe('angularHint', function() {
     it('should warn if there is no ng-hint attribute', function() {
       browser.get('noHint/');
       expect(element(by.id('console')).getText())
-        .toBe('Info: ngHint is included on the page, but is not active because there is no `ng-hint` attribute present');
+        .toBe('Angular Hint: General ngHint is included on the page, but is not active because there is no `ng-hint` attribute present');
     });
   });
 });
