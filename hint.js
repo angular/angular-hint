@@ -89,12 +89,13 @@ function title(str) {
 function flush() {
   var log = angular.hint.flush(), groups = Object.keys(log);
   for(var i = 0, ii = groups.length; i < ii; i++) {
-    console.groupCollapsed('Angular Hint: ' + groups[i]);
+    console.groupCollapsed? console.groupCollapsed('Angular Hint: ' + groups[i]) :
+      console.log('Angular Hint: ' + groups[i]);
     var messages = Object.keys(log[groups[i]]);
     for(var j = 0, jj = messages.length; j < jj; j++) {
       console.log(messages[j]);
     }
-    console.groupEnd();
+    console.groupCollapsed ? console.groupEnd() : function() {};
   }
 }
 setInterval(flush, 5);
