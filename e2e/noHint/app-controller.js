@@ -1,4 +1,4 @@
 angular.module('sampleNoHint').
-  controller('NoController', ['$scope', function($scope) {
+  controller('NoController', [function() {
     var element = document.getElementById('test');
   }]);
