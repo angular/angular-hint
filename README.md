@@ -13,7 +13,7 @@ Including the `ng-hint` directive with no parameters will install all the Angula
 
 Example:
 
-```javascript
+```
   <!doctype html>
   <html ng-app='sample' ng-hint>
     ...
@@ -28,7 +28,7 @@ For more fine-grained hints, you can use `ng-hint-include` to include certain An
 
 Example:
 
-```javascript
+```
   <!doctype html>
   <html ng-app='sample' ng-hint-include="controllers dom">
     ...
@@ -38,7 +38,7 @@ Example:
   </html>
 ```
 
-```javascript
+```
   <!doctype html>
   <html ng-app='sample' ng-hint-exclude="modules">
     ...
@@ -69,7 +69,7 @@ AngularHint is composed of several small modules that you may want to use indivi
 * [AngularHintInterpolation](https://github.com/angular/angular-hint-interpolation)
 * [AngularHintModules](https://github.com/angular/angular-hint-modules)
 
-AngularHint uses [angular-hint-log](https://github.com/angular/angular-hint-log) to provide
+AngularHint uses [AngularHintLog](https://github.com/angular/angular-hint-log) to provide
 logging functionality.
 
 ## Interested in Contributing?
