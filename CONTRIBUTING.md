@@ -247,7 +247,7 @@ Each AngularHint module should provide its own unit tests.
   In karma.conf.js:
 
   ```javascript
-    \\karma.conf.js
+    //karma.conf.js
     module.exports = function(config) {
       config.set({
         frameworks: ['browserify', 'jasmine'],
@@ -273,7 +273,7 @@ Each AngularHint module should provide its own unit tests.
   In a second karma-sauce.conf.js for testing with SauceLabs:
 
   ```javascript
-    \\karma-sauce.conf.js
+    //karma-sauce.conf.js
     var baseConfig = require('./karma.conf.js');
     module.exports = function(config) {
         baseConfig(config);
@@ -321,7 +321,7 @@ Each AngularHint module should provide its own unit tests.
   In package.json:
 
   ```javascript
-  \\package.json
+  //package.json
   "scripts": {
     "test": "karma start karma-sauce.conf.js"
   },
