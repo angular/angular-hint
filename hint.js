@@ -51,7 +51,7 @@ function maybeBootstrap() {
 function loadModules() {
   var modules = [], elt;
 
-  if (elt = document.querySelector('[ng-hint-include]')) {
+  if ((elt = document.querySelector('[ng-hint-include]'))) {
     modules = hintModulesFromElement(elt);
   } else if (elt = document.querySelector('[ng-hint-exclude]')) {
     modules = excludeModules(hintModulesFromElement(elt));
@@ -66,13 +66,13 @@ function loadModules() {
 
 function excludeModules(modulesToExclude) {
   return allModules.filter(function(module) {
-    return modulesToExclude.indexOf(module) == -1;
+    return modulesToExclude.indexOf(module) === -1;
   });
 }
 
 function hintModulesFromElement (elt) {
-  var selectedModules = (elt.attributes['ng-hint-include']
-    || elt.attributes['ng-hint-exclude']).value.split(' ');
+  var selectedModules = (elt.attributes['ng-hint-include'] ||
+    elt.attributes['ng-hint-exclude']).value.split(' ');
 
   return selectedModules.map(hintModuleName).filter(function (name) {
     return (allModules.indexOf(name) > -1) ||
@@ -97,7 +97,7 @@ function flush() {
     for(var j = 0, jj = messages.length; j < jj; j++) {
       console.log(messages[j]);
     }
-    console.groupCollapsed ? console.groupEnd() : function() {};
+    console.groupEnd && console.groupEnd();
   }
 }
 setInterval(flush, 5);
