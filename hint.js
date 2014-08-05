@@ -14,6 +14,8 @@ require('angular-hint-modules');
 var allModules = ['ngHintControllers', 'ngHintDirectives', 'ngHintDom', 'ngHintEvents',
   'ngHintInterpolation', 'ngHintModules'];
 
+var SEVERITY_WARNING = 2;
+
 // Determine whether this run is by protractor.
 // If protractor is running, the bootstrap will already be deferred.
 // In this case `resumeBootstrap` should be patched to load the hint modules.
@@ -58,8 +60,8 @@ function loadModules() {
   } else if (document.querySelector('[ng-hint]')) {
     modules = allModules;
   } else {
-    angular.hint.logMessage('##General## ngHint is included on the page, but is not active because'+
-      ' there is no `ng-hint` attribute present');
+    angular.hint.logMessage('General', 'ngHint is included on the page, but is not active because'+
+      ' there is no `ng-hint` attribute present', SEVERITY_WARNING);
   }
   return modules;
 }
@@ -76,7 +78,7 @@ function hintModulesFromElement (elt) {
 
   return selectedModules.map(hintModuleName).filter(function (name) {
     return (allModules.indexOf(name) > -1) ||
-      angular.hint.logMessage('##General## Module ' + name + ' could not be found');
+      angular.hint.logMessage('General', 'Module ' + name + ' could not be found', SEVERITY_WARNING);
   });
 }
 
@@ -93,11 +95,24 @@ function flush() {
   for(var i = 0, ii = groups.length; i < ii; i++) {
     console.groupCollapsed? console.groupCollapsed('Angular Hint: ' + groups[i]) :
       console.log('Angular Hint: ' + groups[i]);
-    var messages = Object.keys(log[groups[i]]);
-    for(var j = 0, jj = messages.length; j < jj; j++) {
-      console.log(messages[j]);
-    }
+      if(log[groups[i]]['Error Messages']) {
+        logGroup(log[groups[i]]['Error Messages'], 'Error Messages');
+      }
+      if(log[groups[i]]['Warning Messages']) {
+        logGroup(log[groups[i]]['Warning Messages'], 'Warning Messages');
+      }
+      if(log[groups[i]]['Suggestion Messages']) {
+        logGroup(log[groups[i]]['Suggestion Messages'], 'Suggestion Messages');
+      }
     console.groupEnd && console.groupEnd();
   }
 }
-setInterval(flush, 5);
+setInterval(flush, 2);
+
+function logGroup(group, type) {
+  console.group? console.group(type + ':') : console.log(type + ':');
+  for(var i = 0, ii = group.length; i < ii; i++) {
+    console.log(group[i]);
+  }
+  console.group && console.groupEnd();
+}

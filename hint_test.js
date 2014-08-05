@@ -8,10 +8,10 @@ describe('angularHint', function() {
     it('should warn if ng-hint is called with unknown options', function() {
       browser.get('includeWrongModuleName/');
       expect(element(by.id('console')).getText())
-          .toBe('Angular Hint: GeneralModule ngHintWrongModuleName could not be found');
+          .toBe('Angular Hint: GeneralWarning Messages:Module ngHintWrongModuleName could not be found');
       browser.get('excludeWrongModuleName/');
       expect(element(by.id('console')).getText())
-          .toContain('Angular Hint: GeneralModule ngHintExcludeWrongModuleName could not be found');
+          .toContain('Angular Hint: GeneralWarning Messages:Module ngHintExcludeWrongModuleName could not be found');
     });
 
 
@@ -26,13 +26,13 @@ describe('angularHint', function() {
       expect(element(by.id('console')).getText()).toContain('getElementById');
       //angular-hint-events
       expect(element(by.id('console')).getText()).toContain('Variable "increment" called on DIV ' +
-        'element does not exist in that scope. Event directive found on [object HTMLDivElement] ' +
-        'in [object Object] scope');
+        'element does not exist in that scope.');
       //angular-hint-interpolation
       expect(element(by.id('console')).getText()).toContain('was found to be undefined in');
       //angular-hint-modules
-      expect(element(by.id('console')).getText()).toContain('Module "sampleAllHint" was created ' +
-        'but never loaded.');
+      expect(element(by.id('console')).getText()).toContain('ModulesError Messages:ng-app may' +
+        ' only be included once. The module "sampleAllHint" was not used to bootstrap' +
+        ' because ng-app was already included');
     });
 
 
@@ -47,8 +47,7 @@ describe('angularHint', function() {
       browser.get('exclusiveHint/');
       expect(element(by.id('console')).getText()).toContain('getElementById');
       expect(element(by.id('console')).getText()).toContain('Variable "increment" called on DIV ' +
-        'element does not exist in that scope. Event directive found on [object HTMLDivElement] ' +
-        'in [object Object] scope');
+        'element does not exist in that scope.');
       expect(element(by.id('console')).getText()).not.toContain('ng-repeat');
     });
 
@@ -56,7 +55,7 @@ describe('angularHint', function() {
     it('should warn if there is no ng-hint attribute', function() {
       browser.get('noHint/');
       expect(element(by.id('console')).getText())
-        .toBe('Angular Hint: GeneralngHint is included on the page, but is not active because there is no `ng-hint` attribute present');
+        .toBe('Angular Hint: GeneralWarning Messages:ngHint is included on the page, but is not active because there is no `ng-hint` attribute present');
     });
   });
 });

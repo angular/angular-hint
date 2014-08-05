@@ -7,6 +7,14 @@ if(console.groupCollapsed) {
   };
 }
 
+if(console.group) {
+  console.group = function() {
+    for(var i = 0, ii = arguments.length; i < ii; i++) {
+      log.innerHTML += arguments[i];
+    }
+  };
+}
+
 console.groupEnd = function() {};
 
 console.log = function() {
