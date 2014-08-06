@@ -57,6 +57,11 @@ $ npm install
 ```shell
 $ npm run build
 ```
+##Example
+  In the `example` directory, you can find a sample application that appears
+  superficially correct but violates many Angular best practices. When AngularHint is in operation
+  it produces hints for correcting the sample application. In the `correctExample` directory
+  there is an improved version of the sample application.
 
 ## See Also
 
