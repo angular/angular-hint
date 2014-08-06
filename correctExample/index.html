@@ -1,0 +1,83 @@
+<!doctype html>
+<html ng-app="bpAppModule" ng-hint>
+  <head>
+    <meta charset="utf-8">
+    <title>Angular Best Practices</title>
+
+    <link rel="stylesheet" type="text/css" href="app.css">
+
+  </head>
+  <header>
+    <h1> Angular Best Practices </h1>
+  </header>
+  <body>
+    <div id="subtitle1">
+      *You'd think a best practices application would follow the best practices.
+    </div>
+    <div id="subtitle2">
+      In this case you'd be right!
+    </div>
+    <div ng-controller="BestPracticesController">
+      <div id="whichBestPractices">
+        Show Best Practices For:
+        <div id="selectKind">
+          <span ng-repeat="type in types">
+            <input  type="checkbox" id="{{type.name}}" ng-model="type.isChecked">
+            {{type.name}}
+          </span>
+        </div>
+
+      </div>
+
+      <div ng-repeat="type in types">
+        <table ng-show="type.isChecked">
+          <tr ng-repeat="practice in type.practices">
+            <td>
+              {{practice}}
+           </td>
+          </tr>
+        </table>
+      </div>
+
+      <ul id="contributors">
+        App contributors:
+        <li ng-repeat="contributor in contributors">
+          {{contributor}}
+        </li>
+      </ul>
+    </div>
+
+    <script src="../bower_components/angular/angular.js"></script>
+    <script src="../dist/hint.js"></script>
+    <script>
+      angular.module('bpAppModule', []);
+      angular.module('bpAppModule').controller('BestPracticesController', ['$scope', function($scope) {
+          $scope.types = [
+            { name: 'Controllers', practices: ['Do not use global controllers. Define controllers ' +
+            'on modules.', 'Name controllers with UpperCamelCase.', 'Name controllers with the ' +
+            'suffix "Controller".'],  isChecked: false},
+            { name: 'Directives', practices: ['Include required attributes.', 'Follow the restrict ' +
+              'property', 'Do not use deprecated options like "replace".', 'Use Angular event ' +
+              ' directives in place of HTML event attributes like "onclick".', 'Use ng-repeat ' +
+              ' options in the correct order.', 'Use a namespace for custom directives that ' +
+              ' uniquely identifies the directive. Use lowerCamelCase and preferably a custom ' +
+              'prefix unique to the scope of the application.'], isChecked: false},
+            { name: 'DOM', practices: ['Do not manipulate the DOM from within Angular Controllers. Use' +
+              ' logic in the view like "ng-repeat" or "ng-show".'], isChecked: false},
+            { name: 'Events', practices: ['Double check that functions or variables you bind to are ' +
+              'defined.'], isChecked: false},
+            { name: 'Interpolation', practices: ['Make sure the whole variable you are interpolating' +
+              'is defined.'], isChecked: false},
+            { name: 'Modules', practices: ['Use a namespace for modules that ' +
+              ' uniquely identifies the module. Use lowerCamelCase and preferably a custom ' +
+              'prefix unique to the scope of the application.', 'Do not create and load ' +
+              'modules that are not used.', 'Remember to load ngRoute if you are using routing.',
+              'Only bootstrap one module with "ng-app".'], isChecked: false}
+          ];
+
+          $scope.contributors = ['Me', 'You'];
+        }]);
+    </script>
+  </body>
+
+</html>
