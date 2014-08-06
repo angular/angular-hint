@@ -1,25 +1,93 @@
 <!doctype html>
-<html ng-app="sampleApp">
+<html ng-app="bpAppModule" ng-hint>
   <head>
     <meta charset="utf-8">
-    <title>Angular Hint Example</title>
+    <title>Angular Best Practices</title>
 
-    <script src="../bower_components/angular/angular.js"></script>
-    <script src="../bower_components/angular-route/angular-route.js"></script>
-    <script src="../dist/hint.js"></script>
 
-    <script src="app.js"></script>
-    <script src="app-controller.js"></script>
-
-    <link rel="stylesheet" href="app.css">
+    <link rel="stylesheet" type="text/css" href="app.css">
 
   </head>
-  <body ng-hint-include="dom">
-    <header class="header navbar navbar-inverse docs-navbar-primary">
-      <a class="brand navbar-brand" href="http://angularjs.org">
-        <img class="logo" src="angularjs-for-header-only.svg">
-      </a>
-    </header>
-    <div ng-view></div>
+  <header>
+    <h1> Angular Best Practices </h1>
+  </header>
+  <body ng-app="AppModule2">
+    <div id="subtitle1">
+      *You'd think a best practices application would follow the best practices. You'd be wrong.
+    </div>
+    <div id="subtitle2">
+      Open the developer console to read AngularHint messages about the mistakes.
+    </div>
+    <div ng-controller="bestPractices">
+      <div id="whichBestPractices">
+        Show Best Practices For:
+        <form id="selectKind" action="">
+          <input type="checkbox" id="controllers" onclick="changeList()">Controllers</input>
+          <input type="checkbox" id="directives" onclick="changeList()" checked>Directives</input>
+          <input type="checkbox" id="DOM" onclick="changeList()">DOM</input>
+          <input type="checkbox" id="events" onclick="changeList()">Events</input>
+          <input type="checkbox" id="interpolation" onclick="changeList()">Interpolation</input>
+          <input type="checkbox" id="modules" ng-click="changeList()">Modules</input>
+        </form>
+
+      </div>
+
+      <table id="bestPracticesList">
+      </table>
+
+      <ul id="contributors">
+        <li ng-reapet="contributor in contributors">
+          {{contributor.name}}
+        </li>
+      </ul>
+    </div>
+    <script src="../bower_components/angular/angular.js"></script>
+    <script src="../dist/hint.js"></script>
+    <script>
+      angular.module('bpAppModule', []);
+      angular.module('AppModule2', []);
+      angular.module('AppModule2', []).
+        controller('bestPractices', ['$scope', function($scope) {
+          var bestPractices = {
+            'controllers': ['Do not use global controllers. Define controllers ' +
+            'on modules.', 'Name controllers with UpperCamelCase.', 'Name controllers with the ' +
+            'suffix "Controller".'],
+            'directives': ['Include required attributes.', 'Follow the restrict ' +
+              'property', 'Do not use deprecated options like "replace".', 'Use Angular event ' +
+              ' directives in place of HTML event attributes like "onclick".', 'Use ng-repeat ' +
+              ' options in the correct order.', 'Use a namespace for custom directives that ' +
+              ' uniquely identifies the directive. Use lowerCamelCase and preferably a custom ' +
+              'prefix unique to the scope of the application.'],
+            'DOM': ['Do not manipulate the DOM from within Angular Controllers. Use' +
+              ' logic in the view like "ng-repeat" or "ng-show".'],
+            'events': ['Double check that functions or variables you bind to are ' +
+              'defined.'],
+            'interpolation': ['Make sure the whole variable you are interpolating' +
+              'is defined.'],
+            'modules': ['Use a namespace for modules that ' +
+              ' uniquely identifies the module. Use lowerCamelCase and preferably a custom ' +
+              'prefix unique to the scope of the application.', 'Do not create and load ' +
+              'modules that are not used.', 'Remember to load ngRoute if you are using routing.',
+              'Only bootstrap one module with "ng-app".']
+          };
+          var selected = document.getElementById('selectKind');
+          selected.onchange = function() {
+            var types = ['controllers', 'directives', 'DOM', 'events', 'interpolation', 'modules'];
+            var element = document.getElementById('bestPracticesList');
+            element.innerHTML = '';
+            element.className = '';
+            for(var x = 0, xx = types.length; x < xx; x++) {
+              if(document.getElementById(types[x]).checked) {
+                element.className = 'bestPracticesListShow';
+                for(var i = 0, ii = bestPractices[types[x]].length; i < ii; i++) {
+                  element.innerHTML += "<tr><td>" + bestPractices[types[x]][i] + "</td></tr>";
+                }
+              }
+            }
+          }
+          $scope.contributors = ['Me', 'You'];
+        }]);
+    </script>
   </body>
+
 </html>
