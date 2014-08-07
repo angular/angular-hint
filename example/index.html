@@ -2,8 +2,10 @@
 <html ng-app="bpAppModule" ng-hint>
   <head>
     <meta charset="utf-8">
+    <!-- This application is meant to showcase incorrect best practices and errors that
+      will cause AngularHint to generate errors. See the `correctExample` directory
+      for a version of this application that adheres to the best practices. -->
     <title>Angular Best Practices</title>
-
 
     <link rel="stylesheet" type="text/css" href="app.css">
 
@@ -11,6 +13,10 @@
   <header>
     <h1> Angular Best Practices </h1>
   </header>
+  <!-- This app already bootstrapped `bpAppModule`. It should not bootstrap `AppModule2` as well. -->
+  <!-- `bpAppModule` is correctly named with lowerCamelCase and an application specific prefix
+  `bp` standing for `best practices`. `AppModule2` is not named with lowerCamelCase or an application
+  specific prefix. -->
   <body ng-app="AppModule2">
     <div id="subtitle1">
       *You'd think a best practices application would follow the best practices. You'd be wrong.
@@ -18,10 +24,14 @@
     <div id="subtitle2">
       Open the developer console to read AngularHint messages about the mistakes.
     </div>
+    <!-- Controllers should be named with UpperCamelCase and should end in `Controller`-->
     <div ng-controller="bestPractices">
       <div id="whichBestPractices">
         Show Best Practices For:
+        <!-- Repetition should be a red flag. Consider using ng-repeat or a custom directive
+        to cut down repetition -->
         <div id="selectKind">
+          <!-- Use angular event directives like `ng-click` rather than `onclick` -->
           <input type="checkbox" id="controllers" onclick="changeList()">Controllers</input>
           <input type="checkbox" id="directives" onclick="changeList()" checked>Directives</input>
           <input type="checkbox" id="DOM" onclick="changeList()">DOM</input>
@@ -31,10 +41,14 @@
         </div>
       </div>
 
+      <!-- Create elements in the HTML page using Angular directives like ng-repeat. Do not rely on
+      javascript in Controllers to fill in information -->
       <table id="bestPracticesList">
       </table>
 
       <div ng-controller="Controller">
+        <!-- Custom directives should be named with an application specific prefix. -->
+        <!-- Double check that custom directives are used according to their restrict property -->
         <div our-visitors info="erin"></div>
       </div>
       <ul id="contributors">
@@ -47,6 +61,10 @@
     <script src="../dist/hint.js"></script>
     <script>
       angular.module('bpAppModule', []);
+        /**
+        * Do not use global controller functions. Instantiate controllers on modules.
+        * Use syntax like `angular.module('bpAppModule', []).controller`
+        **/
         function bestPractices($scope) {
           var bestPractices = {
             'controllers': ['Do not use global controllers. Define controllers ' +
@@ -70,6 +88,11 @@
               'modules that are not used.', 'Remember to load ngRoute if you are using routing.',
               'Only bootstrap one module with "ng-app".']
           };
+          /**
+          * Do not manipulate the DOM from within Angular controllers. Use
+          * Angular directives like ng-repeat to accomplish the same task without
+          * entangling model, view, controller logic.
+          */
           var selected = document.getElementById('selectKind');
           selected.onchange = function() {
             var types = ['controllers', 'directives', 'DOM', 'events', 'interpolation', 'modules'];
@@ -94,6 +117,13 @@
           bestPractice: 'Do not manipulate the DOM from within Angular Controllers.'
         };
       }]);
+
+      /**
+      * Do not accidentally overwrite Angular modules. Passing the `[]` parameter
+      * re-instantiates this module and the previous controller is not saved.
+      * Chain together the .controller and .directive calls or access the already created
+      * module with syntax like `angular.module('AppModule2')`
+      **/
       angular.module('AppModule2', []).directive('OurVisitors', function() {
         return {
           restrict: 'A',
@@ -101,6 +131,9 @@
           scope: {
             visitor: '=info'
           },
+          /**
+          * Do not use deprecated options.
+          */
           replace: true
         };
       });
