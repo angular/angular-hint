@@ -39,6 +39,8 @@
         </table>
       </div>
 
+      <div bp-our-visitors info="erin"></div>
+
       <ul id="contributors">
         App contributors:
         <li ng-repeat="contributor in contributors">
@@ -50,8 +52,8 @@
     <script src="../bower_components/angular/angular.js"></script>
     <script src="../dist/hint.js"></script>
     <script>
-      angular.module('bpAppModule', []);
-      angular.module('bpAppModule').controller('BestPracticesController', ['$scope', function($scope) {
+      angular.module('bpAppModule', [])
+        .controller('BestPracticesController', ['$scope', function($scope) {
           $scope.types = [
             { name: 'Controllers', practices: ['Do not use global controllers. Define controllers ' +
             'on modules.', 'Name controllers with UpperCamelCase.', 'Name controllers with the ' +
@@ -74,9 +76,21 @@
               'modules that are not used.', 'Remember to load ngRoute if you are using routing.',
               'Only bootstrap one module with "ng-app".'], isChecked: false}
           ];
-
+          $scope.erin = {
+            name: 'Erin',
+            bestPractice: 'Do not manipulate the DOM from within Angular Controllers.'
+          };
           $scope.contributors = ['Me', 'You'];
-        }]);
+      }])
+      .directive('bpOurVisitors', function() {
+        return {
+          restrict: 'A',
+          template: '<br>Site Visitors:<br>Name: {{visitor.name}}. Favorite Best Practice: {{visitor.bestPractice}}',
+          scope: {
+            visitor: '=info'
+          }
+        };
+      });
     </script>
   </body>
 

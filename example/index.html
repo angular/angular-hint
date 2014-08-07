@@ -21,20 +21,22 @@
     <div ng-controller="bestPractices">
       <div id="whichBestPractices">
         Show Best Practices For:
-        <form id="selectKind" action="">
+        <div id="selectKind">
           <input type="checkbox" id="controllers" onclick="changeList()">Controllers</input>
           <input type="checkbox" id="directives" onclick="changeList()" checked>Directives</input>
           <input type="checkbox" id="DOM" onclick="changeList()">DOM</input>
           <input type="checkbox" id="events" onclick="changeList()">Events</input>
           <input type="checkbox" id="interpolation" onclick="changeList()">Interpolation</input>
           <input type="checkbox" id="modules" ng-click="changeList()">Modules</input>
-        </form>
-
+        </div>
       </div>
 
       <table id="bestPracticesList">
       </table>
 
+      <div ng-controller="Controller">
+        <div our-visitors info="erin"></div>
+      </div>
       <ul id="contributors">
         <li ng-reapet="contributor in contributors">
           {{contributor.name}}
@@ -45,9 +47,7 @@
     <script src="../dist/hint.js"></script>
     <script>
       angular.module('bpAppModule', []);
-      angular.module('AppModule2', []);
-      angular.module('AppModule2', []).
-        controller('bestPractices', ['$scope', function($scope) {
+        function bestPractices($scope) {
           var bestPractices = {
             'controllers': ['Do not use global controllers. Define controllers ' +
             'on modules.', 'Name controllers with UpperCamelCase.', 'Name controllers with the ' +
@@ -86,7 +86,24 @@
             }
           }
           $scope.contributors = ['Me', 'You'];
-        }]);
+        }
+
+      angular.module('AppModule2', []).controller('Controller', ['$scope', function($scope) {
+        $scope.erin = {
+          name: 'Erin',
+          bestPractice: 'Do not manipulate the DOM from within Angular Controllers.'
+        };
+      }]);
+      angular.module('AppModule2', []).directive('OurVisitors', function() {
+        return {
+          restrict: 'A',
+          template: '<br>Site Visitors:<br>Name: {{visitor.name}}. Favorite Best Practice: {{visitor.bestPractice}}',
+          scope: {
+            visitor: '=info'
+          },
+          replace: true
+        };
+      });
     </script>
   </body>
 
