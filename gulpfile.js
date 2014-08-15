@@ -5,6 +5,7 @@ var exec = require('child_process').exec;
 var http = require('http');
 var st = require('st');
 var Router = require('routes-router');
+var connect = require('gulp-connect');
 
 var main = require('./package.json').main;
 
@@ -17,6 +18,10 @@ gulp.task('browserify', function() {
   return bundleStream.pipe(gulp.dest('./dist'));
 });
 
+
+gulp.task('webserver', function() {
+  connect.server();
+});
 
 gulp.task('serve', startServer);
 
