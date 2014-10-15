@@ -13,14 +13,14 @@ Including the `ng-hint` directive with no parameters will install all the Angula
 
 Example:
 
-```
-  <!doctype html>
-  <html ng-app='sample' ng-hint>
-    ...
-    <script src="../../bower_components/angular/angular.js"></script>
-    <script src="../../dist/hint.js"></script>
-    ...
-  </html>
+```html
+<!doctype html>
+<html ng-app="sample" ng-hint>
+  ...
+  <script src="../../bower_components/angular/angular.js"></script>
+  <script src="../../dist/hint.js"></script>
+  ...
+</html>
 ```
 
 For more fine-grained hints, you can use `ng-hint-include` to include certain AngularHint modules or
@@ -28,24 +28,24 @@ For more fine-grained hints, you can use `ng-hint-include` to include certain An
 
 Example:
 
-```
-  <!doctype html>
-  <html ng-app='sample' ng-hint-include="controllers dom">
-    ...
-    <script src="../../bower_components/angular/angular.js"></script>
-    <script src="../../dist/hint.js"></script>
-    ...
-  </html>
+```html
+<!doctype html>
+<html ng-app="sample" ng-hint-include="controllers dom">
+  ...
+  <script src="../../bower_components/angular/angular.js"></script>
+  <script src="../../dist/hint.js"></script>
+  ...
+</html>
 ```
 
-```
-  <!doctype html>
-  <html ng-app='sample' ng-hint-exclude="modules">
-    ...
-    <script src="../../bower_components/angular/angular.js"></script>
-    <script src="../../dist/hint.js"></script>
-    ...
-  </html>
+```html
+<!doctype html>
+<html ng-app="sample" ng-hint-exclude="modules">
+  ...
+  <script src="../../bower_components/angular/angular.js"></script>
+  <script src="../../dist/hint.js"></script>
+  ...
+</html>
 ```
 
 ## Building
