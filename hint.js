@@ -1,5 +1,7 @@
-//Create pipe for all hint messages from different modules
-angular.hint = require('angular-hint-log');
+'use strict';
+
+// Create pipe for all hint messages from different modules
+window.angular.hint = require('angular-hint-log');
 
 // Load angular hint modules
 require('angular-hint-controllers');
@@ -60,8 +62,8 @@ function loadModules() {
   } else if (document.querySelector('[ng-hint]')) {
     modules = allModules;
   } else {
-    angular.hint.logMessage('General', 'ngHint is included on the page, but is not active because'+
-      ' there is no `ng-hint` attribute present', SEVERITY_WARNING);
+    angular.hint.logMessage('General', 'ngHint is included on the page, but is not active because ' +
+      'there is no `ng-hint` attribute present', SEVERITY_WARNING);
   }
   return modules;
 }
