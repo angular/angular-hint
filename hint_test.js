@@ -1,10 +1,6 @@
 describe('angularHint', function() {
   describe('angular hint bootstrapping', function() {
 
-    beforeEach(function() {
-      ptor = protractor.getInstance();
-    });
-
     it('should warn if ng-hint is called with unknown options', function() {
       browser.get('includeWrongModuleName/');
       expect(element(by.id('console')).getText())
