@@ -35,12 +35,12 @@
     "angular-hint-scopes": "0.0.1"
   },
   "devDependencies": {
-    "browserify": "^4.2.0",
-    "gulp": "^3.8.5",
-    "http-server": "^0.6.1",
-    "protractor": "^1.0.0-rc4",
-    "routes-router": "^3.3.0",
-    "st": "^0.5.1",
-    "vinyl-source-stream": "^0.1.1"
+    "browserify": "^6.1.0",
+    "gulp": "^3.8.9",
+    "http-server": "^0.7.2",
+    "protractor": "^1.3.1",
+    "routes-router": "^4.1.1",
+    "st": "^0.5.2",
+    "vinyl-source-stream": "^1.0.0"
   }
 }
