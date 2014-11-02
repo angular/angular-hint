@@ -32,7 +32,7 @@
     "angular-hint-interpolation": "~0.3.0",
     "angular-hint-log": "~0.4.0",
     "angular-hint-modules": "~0.4.0",
-    "angular-hint-scopes": "0.0.1"
+    "angular-hint-scopes": "~0.0.1"
   },
   "devDependencies": {
     "browserify": "^6.1.0",
