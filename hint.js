@@ -6,9 +6,9 @@ window.angular.hint = require('angular-hint-log');
 // Load angular hint modules
 require('angular-hint-controllers');
 require('angular-hint-directives');
-require('angular-hint-dom');
+//require('angular-hint-dom');
 require('angular-hint-events');
-require('angular-hint-interpolation');
+//require('angular-hint-interpolation');
 require('angular-hint-modules');
 require('angular-hint-scopes');
 
@@ -100,27 +100,39 @@ function title(str) {
   return str[0].toUpperCase() + str.substr(1);
 }
 
+var LEVELS = [
+  'error',
+  'warning',
+  'suggestion'
+];
+
 function flush() {
-  var log = angular.hint.flush(), groups = Object.keys(log);
-  for(var i = 0, ii = groups.length; i < ii; i++) {
-    console.groupCollapsed? console.groupCollapsed('Angular Hint: ' + groups[i]) :
-      console.log('Angular Hint: ' + groups[i]);
-      if(log[groups[i]]['Error Messages']) {
-        logGroup(log[groups[i]]['Error Messages'], 'Error Messages');
-      }
-      if(log[groups[i]]['Warning Messages']) {
-        logGroup(log[groups[i]]['Warning Messages'], 'Warning Messages');
-      }
-      if(log[groups[i]]['Suggestion Messages']) {
-        logGroup(log[groups[i]]['Suggestion Messages'], 'Suggestion Messages');
-      }
+  var log = angular.hint.flush(),
+      groups = Object.keys(log);
+
+  groups.forEach(function (groupName) {
+    var group = log[groupName];
+    var header = 'Angular Hint: ' + groupName;
+
+    console.groupCollapsed ?
+        console.groupCollapsed(header) :
+        console.log(header);
+
+    LEVELS.forEach(function (level) {
+      group[level] && logGroup(group[level], title(level));
+    });
     console.groupEnd && console.groupEnd();
-  }
+  });
 }
-setInterval(flush, 2);
+
+setInterval(flush, 2)
+
+angular.hint.onMessage = function () {
+  setTimeout(flush, 2);
+};
 
 function logGroup(group, type) {
-  console.group? console.group(type + ':') : console.log(type + ':');
+  console.group ? console.group(type) : console.log(type);
   for(var i = 0, ii = group.length; i < ii; i++) {
     console.log(group[i]);
   }

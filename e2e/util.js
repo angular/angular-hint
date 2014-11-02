@@ -1,24 +1,28 @@
+/*
+ * override console.* APIs to write to DOM
+ * in E2E tests so protractor can see the output
+ */
+
+'use strict';
+
 var log = document.getElementById('console');
-if(console.groupCollapsed) {
-  console.groupCollapsed = function() {
-    for(var i = 0, ii = arguments.length; i < ii; i++) {
-      log.innerHTML += arguments[i];
-    }
-  };
+function logToElement() {
+  log.innerHTML += Array.prototype.slice.call(arguments).join('; ') + '; ';
 }
 
-if(console.group) {
-  console.group = function() {
-    for(var i = 0, ii = arguments.length; i < ii; i++) {
-      log.innerHTML += arguments[i];
-    }
-  };
+if (console.groupCollapsed) {
+  console.groupCollapsed = logToElement;
+}
+
+if (console.group) {
+  console.group = logToElement;
 }
 
 console.groupEnd = function() {};
 
-console.log = function() {
-  for(var i = 0, ii = arguments.length; i < ii; i++) {
-    log.innerHTML += arguments[i];
-  }
-};
+console._log = console.log;
+console.log = logToElement;
+
+
+//angular.hint.onMessage = angular.hint.flush;
+
