@@ -9,7 +9,7 @@ var Router = require('routes-router');
 var main = require('./package.json').main;
 
 gulp.task('watch', function() {
-  gulp.watch(['./*.js'], ['browserify']);
+  gulp.watch(['./*.js'], ['browserify', 'protractor']);
 });
 
 gulp.task('browserify', function() {
@@ -32,7 +32,7 @@ function startServer() {
   return server;
 }
 
-gulp.task('protractor', ['webdriver'], function (cb) {
+gulp.task('protractor', ['build', 'webdriver'], function (cb) {
   var server = startServer();
   var cmd = './node_modules/.bin/protractor protractor' +
       (process.env.TRAVIS_JOB_NUMBER ? '-travis' : '') +
