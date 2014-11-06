@@ -51,12 +51,13 @@ Example:
 ## Building
 
 ```shell
-$ npm install
+$ npm install && ./bower-install.sh
 ```
 
 ```shell
 $ npm run build
 ```
+
 ##Example
   In the `example` directory, you can find a sample application that appears
   superficially correct but violates many Angular best practices. When AngularHint is in operation
