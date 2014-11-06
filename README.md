@@ -4,7 +4,7 @@ Runtime hinting for AngularJS.
 
 ## Usage
 
-Add `<script src="hint.js"></script>` to your app's `index.html` immediately after the
+First build this project (see [Building](#Building) section) with gulp and browserify. Then add the built version `<script src="hint.js"></script>` to your app's `index.html` immediately after the
 `angular.js` script.
 
 This will load the set of AngularHint modules. Now you are set to use the `ng-hint` directive.
