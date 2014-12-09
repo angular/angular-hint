@@ -38,7 +38,7 @@
     "browserify": "^6.1.0",
     "gulp": "^3.8.9",
     "http-server": "^0.7.2",
-    "protractor": "^1.3.1",
+    "protractor": "^1.5.0",
     "routes-router": "^4.1.1",
     "st": "^0.5.2",
     "vinyl-source-stream": "^1.0.0"
