@@ -108,36 +108,3 @@ var LEVELS = [
   'warning',
   'suggestion'
 ];
-
-function flush() {
-  var log = angular.hint.flush(),
-      groups = Object.keys(log);
-
-  groups.forEach(function (groupName) {
-    var group = log[groupName];
-    var header = 'Angular Hint: ' + groupName;
-
-    console.groupCollapsed ?
-        console.groupCollapsed(header) :
-        console.log(header);
-
-    LEVELS.forEach(function (level) {
-      group[level] && logGroup(group[level], title(level));
-    });
-    console.groupEnd && console.groupEnd();
-  });
-}
-
-setInterval(flush, 2)
-
-angular.hint.onMessage = function () {
-  setTimeout(flush, 2);
-};
-
-function logGroup(group, type) {
-  console.group ? console.group(type) : console.log(type);
-  for(var i = 0, ii = group.length; i < ii; i++) {
-    console.log(group[i]);
-  }
-  console.group && console.groupEnd();
-}
