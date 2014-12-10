@@ -62,6 +62,9 @@ function maybeBootstrap() {
 
 function loadModules() {
   var modules = [], elt;
+  if (angular.version.minor < 2) {
+    return modules;
+  }
 
   if ((elt = document.querySelector('[ng-hint-include]'))) {
     modules = hintModulesFromElement(elt);
