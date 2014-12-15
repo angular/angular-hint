@@ -20,4 +20,4 @@ install:
   - ./scripts/wait_for_browser_provider.sh
 
 script:
-  - ./scripts/testonsauce.sh
+  - ./scripts/test_on_sauce.sh
