@@ -1,0 +1,33 @@
+{
+  "name": "angular-hint",
+  "version": "0.1.0",
+  "homepage": "https://github.com/angular/angular-hint",
+  "authors": [
+    "Brian Ford <btford@umich.edu>"
+  ],
+  "description": "WIP: run-time hinting for AngularJS applications",
+  "main": "dist/hint.js",
+  "moduleType": [
+    "es6"
+  ],
+  "keywords": [
+    "angular",
+    "hint"
+  ],
+  "license": "Apache 2.0",
+  "ignore": [
+    "**/.*",
+    "bower-install.sh",
+    "CONTRIBUTING.md",
+    "/*.js",
+    "node_modules",
+    "bower_components",
+    "correctExample",
+    "e2e",
+    "example",
+    "scripts"
+  ],
+  "dependencies": {
+    "angular": "^1.2.25"
+  }
+}
