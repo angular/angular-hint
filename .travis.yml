@@ -15,8 +15,7 @@ install:
   - mkdir -p $LOGS_DIR
   - ./scripts/sauce_connect_setup.sh
   - npm install
-  - npm install -g bower
-  - ./bower-install.sh
+  - ./npm-install.sh
   - ./scripts/wait_for_browser_provider.sh
 
 script:
