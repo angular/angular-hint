@@ -1,6 +1,6 @@
 'use strict';
 
-var summarize = require('../summarize-model');
+var summarize = require('../lib/summarize-model');
 var debounceOn = require('debounce-on');
 
 var hint = angular.hint;

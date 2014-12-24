@@ -4,7 +4,7 @@ var sauceConfig = require('./config/karma.sauce.conf');
 var travisConfig = require('./config/karma.travis.conf');
 //var fs = require('fs');
 
-//fs.readdirSync(__dirname + '/lib/modules').filter
+//fs.readdirSync(__dirname + '/src/modules').filter
 
 module.exports = function(config) {
   var options = {
@@ -12,8 +12,8 @@ module.exports = function(config) {
     files: [
       'node_modules/angular/angular.js',
       'node_modules/angular-mocks/angular-mocks.js',
-      'lib/modules/log.js',
-      'lib/modules/*.js'
+      'src/modules/log.js',
+      'src/modules/*.js'
     ],
     preprocessors: {
       'lib/modules/controllers.js': ['browserify'],
