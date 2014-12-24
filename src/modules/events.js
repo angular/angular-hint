@@ -1,11 +1,11 @@
 'use strict';
 
 /**
-* Load necessary functions from /lib into variables.
+* Load necessary functions from /src into variables.
 */
-var EVENT_NAMES = require('../event-directives');
+var EVENT_NAMES = require('../lib/event-directives');
 
-var provider = require('../debug-parse');
+var provider = require('../lib/debug-parse');
 var err = null;
 provider.onUndefined(function (text) {
   if (!err) {

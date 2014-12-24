@@ -1,20 +1,20 @@
 'use strict';
 
 // Create pipe for all hint messages from different modules
-require('./lib/modules/log');
+require('./src/modules/log');
 
 // Load angular hint modules
-require('./lib/modules/controllers');
-// require('./lib/modules/directives');
-// require('./lib/modules/dom');
-// require('./lib/modules/events');
-// require('./lib/modules/interpolation');
-// require('./lib/modules/modules');
-require('./lib/modules/scopes');
+require('./src/modules/controllers');
+// require('./src/modules/directives');
+// require('./src/modules/dom');
+// require('./src/modules/events');
+// require('./src/modules/interpolation');
+require('./src/modules/modules');
+require('./src/modules/scopes');
 
 // List of all possible modules
 // The default ng-hint behavior loads all modules
-var allModules = [
+var AVAILABLE_MODULES = [
   'ngHintControllers',
 // 'ngHintDirectives',
 //  'ngHintDom',
@@ -71,7 +71,7 @@ function loadModules() {
   } else if (elt = document.querySelector('[ng-hint-exclude]')) {
     modules = excludeModules(hintModulesFromElement(elt));
   } else if (document.querySelector('[ng-hint]')) {
-    modules = allModules;
+    modules = AVAILABLE_MODULES;
   } else {
     angular.hint.log('General', 'ngHint is included on the page, but is not active because ' +
       'there is no `ng-hint` attribute present', SEVERITY_WARNING);
@@ -80,7 +80,7 @@ function loadModules() {
 }
 
 function excludeModules(modulesToExclude) {
-  return allModules.filter(function(module) {
+  return AVAILABLE_MODULES.filter(function(module) {
     return modulesToExclude.indexOf(module) === -1;
   });
 }
@@ -90,7 +90,7 @@ function hintModulesFromElement (elt) {
     elt.attributes['ng-hint-exclude']).value.split(' ');
 
   return selectedModules.map(hintModuleName).filter(function (name) {
-    return (allModules.indexOf(name) > -1) ||
+    return (AVAILABLE_MODULES.indexOf(name) > -1) ||
       angular.hint.log('General', 'Module ' + name + ' could not be found', SEVERITY_WARNING);
   });
 }
