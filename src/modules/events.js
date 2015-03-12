@@ -1,20 +1,11 @@
 'use strict';
 
 /**
-* Load necessary functions from /src into variables.
+* Load necessary functions from /lib into variables.
 */
-var EVENT_NAMES = require('../lib/event-directives');
-
-var provider = require('../lib/debug-parse');
-var err = null;
-provider.onUndefined(function (text) {
-  if (!err) {
-    err = text;
-  }
-});
-var constructor = new provider();
-
-var debugParse = null
+var ngEventDirectives = require('../lib/getEventDirectives')(),
+  getFunctionNames = require('../lib/getFunctionNames'),
+  formatResults = require('../lib/formatResults');
 
 /**
 * Decorate $provide in order to examine ng-event directives
@@ -22,65 +13,42 @@ var debugParse = null
 */
 angular.module('ngHintEvents', [])
   .config(['$provide', function($provide) {
-    EVENT_NAMES.forEach(function (eventName) {
-      var directiveName = eventToDirectiveName(eventName);
-      // new versions of angular include event directives that older versions do not
-      try {
-        $provide.decorator(directiveName, ['$delegate', '$parse', '$filter', '$sniffer',
-              hintDirectiveDecoratorFactory(eventName)]);
+
+    for(var directive in ngEventDirectives) {
+      var dirName = ngEventDirectives[directive] + 'Directive';
+      try{
+        $provide.decorator(dirName, ['$delegate', '$timeout', '$parse', ngEventDirectivesDecorator]);
       } catch(e) {}
-    });
+    }
   }]);
 
-var debugParseInstance = null;
-var forceAsyncEvents = {
-  'blur': true,
-  'focus': true
-};
-function hintDirectiveDecoratorFactory(eventName) {
-  var attrName = eventToAttrName(eventName);
-  return function hintDirectiveDecorator($delegate, $parse, $filter, $sniffer) {
-    var original = $delegate[0].compile,
-                   falseBinds = [],
-                   messages = [];
+function ngEventDirectivesDecorator($delegate, $timeout, $parse) {
 
-    if (!debugParseInstance) {
-      debugParseInstance = constructor.$get[2]($filter, $sniffer);
-    }
+  var original = $delegate[0].compile,
+      falseBinds = [],
+      messages = [];
 
-    $delegate[0].compile = function($element, attr) {
-      // We expose the powerful $event object on the scope that provides access to the Window,
-      // etc. that isn't protected by the fast paths in $parse.  We explicitly request better
-      // checks at the cost of speed since event handler expressions are not executed as
-      // frequently as regular change detection.
-      var fn = debugParseInstance(attr[eventToAttrName(eventName)], /* interceptorFn */ null, /* expensiveChecks */ true);
-      return function ngEventHandler(scope, element) {
-        element.on(eventName, function(event) {
-          var callback = function() {
-            err = null;
-            fn(scope, {$event: event});
-            if (err) {
-              angular.hint.log(err);
-            }
-          };
-          if (forceAsyncEvents[eventName] && $rootScope.$$phase) {
-            scope.$evalAsync(callback);
-          } else {
-            scope.$apply(callback);
+  $delegate[0].compile = function(element, attrs, transclude) {
+    var angularAttrs = attrs.$attr;
+    var linkFn = original.apply(this, arguments);
+    var messages = [];
+    return function ngEventHandler(scope, element, attrs) {
+      for(var attr in angularAttrs) {
+        var boundFuncs = getFunctionNames(attrs[attr]);
+        boundFuncs.forEach(function(boundFn) {
+          if(ngEventDirectives[attr] && !(boundFn in scope)) {
+            messages.push({
+              scope: scope,
+              element:element,
+              attrs: attrs,
+              boundFunc: boundFn
+            });
           }
         });
-      };
+      }
+      linkFn.apply(this, arguments);
+      formatResults(messages);
     };
-
-    return $delegate;
-  }
-}
-
-
-function eventToDirectiveName(eventName) {
-  return eventToAttrName(eventName) + 'Directive';
-}
-
-function eventToAttrName(eventName) {
-  return 'ng' + eventName[0].toUpperCase() + eventName.substr(1);
+  };
+  return $delegate;
 }

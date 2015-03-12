@@ -1,5 +1,5 @@
 var hintLog = angular.hint;
-var start = require('./src/start');
+//var start = require('./src/start');
 var modData = require('./src/moduleData');
 
 describe('hintModules', function() {
