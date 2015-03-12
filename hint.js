@@ -7,7 +7,7 @@ require('./src/modules/log');
 require('./src/modules/controllers');
 // require('./src/modules/directives');
 // require('./src/modules/dom');
-// require('./src/modules/events');
+require('./src/modules/events');
 // require('./src/modules/interpolation');
 // require('./src/modules/modules');
 require('./src/modules/scopes');
@@ -18,7 +18,7 @@ var AVAILABLE_MODULES = [
   'ngHintControllers',
 // 'ngHintDirectives',
 //  'ngHintDom',
-//  'ngHintEvents',
+  'ngHintEvents',
 //  'ngHintInterpolation',
 //  'ngHintModules',
   'ngHintScopes'

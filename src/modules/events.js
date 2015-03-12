@@ -3,9 +3,26 @@
 /**
 * Load necessary functions from /lib into variables.
 */
-var ngEventDirectives = require('../lib/getEventDirectives')(),
-  getFunctionNames = require('../lib/getFunctionNames'),
-  formatResults = require('../lib/formatResults');
+var ngEventAttributes = require('../lib/event-directives'),
+    MODULE_NAME = 'Events';
+
+
+var getFunctionNames = function(str) {
+  if (typeof str !== 'string') {
+    return [];
+  }
+  var results = str.replace(/\s+/g, '').split(/[\+\-\/\|\<\>\^=&!%~]/g).map(function(x) {
+    if (isNaN(+x)) {
+      if (x.match(/\w+\(.*\)$/)){
+        return x.substr(0, x.indexOf('('));
+      }
+      return x;
+    }
+  }).filter(function(x){
+    return x;
+  });
+  return results;
+};
 
 /**
 * Decorate $provide in order to examine ng-event directives
@@ -13,42 +30,32 @@ var ngEventDirectives = require('../lib/getEventDirectives')(),
 */
 angular.module('ngHintEvents', [])
   .config(['$provide', function($provide) {
-
-    for(var directive in ngEventDirectives) {
-      var dirName = ngEventDirectives[directive] + 'Directive';
-      try{
-        $provide.decorator(dirName, ['$delegate', '$timeout', '$parse', ngEventDirectivesDecorator]);
+    for (var i = 0; i < ngEventAttributes.length; i++) {
+      try {
+        $provide.decorator(ngEventAttributes[i] + 'Directive',
+            ['$delegate', '$parse', ngEventDirectivesDecorator(ngEventAttributes[i])]);
       } catch(e) {}
     }
   }]);
 
-function ngEventDirectivesDecorator($delegate, $timeout, $parse) {
+function ngEventDirectivesDecorator(ngEventAttrName) {
+  return function ($delegate, $parse) {
+    var originalCompileFn = $delegate[0].compile;
 
-  var original = $delegate[0].compile,
-      falseBinds = [],
-      messages = [];
+    $delegate[0].compile = function(element, attrs, transclude) {
+      var linkFn = originalCompileFn.apply(this, arguments);
 
-  $delegate[0].compile = function(element, attrs, transclude) {
-    var angularAttrs = attrs.$attr;
-    var linkFn = original.apply(this, arguments);
-    var messages = [];
-    return function ngEventHandler(scope, element, attrs) {
-      for(var attr in angularAttrs) {
-        var boundFuncs = getFunctionNames(attrs[attr]);
+      return function ngEventHandler(scope, element, attrs) {
+        var boundFuncs = getFunctionNames(attrs[ngEventAttrName]);
         boundFuncs.forEach(function(boundFn) {
-          if(ngEventDirectives[attr] && !(boundFn in scope)) {
-            messages.push({
-              scope: scope,
-              element:element,
-              attrs: attrs,
-              boundFunc: boundFn
-            });
+          if ($parse(boundFn)(scope) === undefined) {
+            angular.hint.log(MODULE_NAME, boundFn + ' is undefined');
           }
         });
-      }
-      linkFn.apply(this, arguments);
-      formatResults(messages);
+
+        return linkFn.apply(this, arguments);
+      };
     };
-  };
-  return $delegate;
+    return $delegate;
+  }
 }
