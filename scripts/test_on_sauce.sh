@@ -15,6 +15,6 @@ trap killServer EXIT
 SAUCE_ACCESS_KEY=`echo $SAUCE_ACCESS_KEY | rev`
 
 #./node_modules/.bin/protractor protractor.conf.js --travis &
-./node_modules/.bin/karma start karma.conf.js --sauce &
+karma start karma.conf.js --sauce &
 wait %2
 #wait %2 %3
