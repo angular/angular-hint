@@ -22,7 +22,3 @@ console.groupEnd = function() {};
 
 console._log = console.log;
 console.log = logToElement;
-
-
-//angular.hint.onMessage = angular.hint.flush;
-

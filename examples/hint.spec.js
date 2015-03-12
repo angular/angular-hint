@@ -1,18 +1,6 @@
 'use strict';
 
 describe('angularHint', function() {
-
-  it('should warn if ng-hint is called with unknown options', function() {
-    browser.get('includeWrongModuleName/');
-    expect(consoleText())
-        .toBe('Angular Hint: General; Warning; Module ngHintWrongModuleName could not be found;');
-
-    browser.get('excludeWrongModuleName/');
-    expect(consoleText())
-        .toContain('Angular Hint: General; Warning; Module ngHintExcludeWrongModuleName could not be found;');
-  });
-
-
   it('should include all modules by ng-hint default', function() {
     browser.get('allHint/');
 

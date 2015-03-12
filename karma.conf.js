@@ -12,13 +12,12 @@ module.exports = function(config) {
     files: [
       'node_modules/angular/angular.js',
       'node_modules/angular-mocks/angular-mocks.js',
-      'src/modules/log.js',
-      'src/modules/*.js'
+      'hint.js',
+      {pattern: 'src/**/*.js', included: false, served: false, watched: true},
+      'test/*.spec.js'
     ],
     preprocessors: {
-      'lib/modules/controllers.js': ['browserify'],
-      'lib/modules/events.js': ['browserify'],
-      'lib/modules/scopes.js': ['browserify']
+      'hint.js': ['browserify']
     },
     browsers: ['Chrome'],
     browserify: {
