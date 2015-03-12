@@ -44,6 +44,7 @@
     "karma-browserify": "^1.0.1",
     "karma-chrome-launcher": "^0.1.7",
     "karma-jasmine": "^0.3.2",
+    "karma-sauce-launcher": "^0.2.10",
     "protractor": "^1.5.0",
     "routes-router": "^4.1.1",
     "st": "^0.5.2",
