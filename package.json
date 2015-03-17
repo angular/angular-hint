@@ -31,7 +31,8 @@
     "angular-hint-interpolation": "~0.3.0",
     "angular-hint-modules": "~0.4.0",
     "angular-hint-scopes": "~0.2.0",
-    "debounce-on": "0.0.0"
+    "debounce-on": "0.0.0",
+    "suggest-it": "0.0.1"
   },
   "devDependencies": {
     "angular": "^1.3.14",
@@ -48,7 +49,6 @@
     "protractor": "^1.5.0",
     "routes-router": "^4.1.1",
     "st": "^0.5.2",
-    "suggest-it": "0.0.1",
     "vinyl-source-stream": "^1.0.0"
   }
 }
