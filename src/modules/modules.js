@@ -1,11 +1,11 @@
 'use strict';
 
-var getModule = require('./src/getModule'),
-    start = require('./src/start'),
-    storeNgAppAndView = require('./src/storeNgAppAndView'),
-    storeUsedModules = require('./src/storeUsedModules'),
-    hasNameSpace = require('./src/hasNameSpace'),
-    modData = require('./src/moduleData');
+var getModule = require('./getModule'),
+    start = require('./start'),
+    storeNgAppAndView = require('./storeNgAppAndView'),
+    storeUsedModules = require('./storeUsedModules'),
+    hasNameSpace = require('./hasNameSpace'),
+    modData = require('./moduleData');
 
 var doc = Array.prototype.slice.call(document.getElementsByTagName('*')),
     originalAngularModule = angular.module,
@@ -19,7 +19,7 @@ angular.module = function(name, requiresOriginal) {
 
   module.requiresOriginal = requiresOriginal;
   modules[name] = module;
-  hasNameSpace(module);
+  hasNameSpace(name);
   var modToCheck = getModule(name, true);
 
   if(modToCheck && modToCheck.requiresOriginal !== module.requiresOriginal) {

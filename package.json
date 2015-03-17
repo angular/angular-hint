@@ -48,6 +48,7 @@
     "protractor": "^1.5.0",
     "routes-router": "^4.1.1",
     "st": "^0.5.2",
+    "suggest-it": "0.0.1",
     "vinyl-source-stream": "^1.0.0"
   }
 }
