@@ -1,11 +1,11 @@
 'use strict';
 
-var getModule = require('./getModule'),
-    start = require('./start'),
-    storeNgAppAndView = require('./storeNgAppAndView'),
-    storeUsedModules = require('./storeUsedModules'),
-    hasNameSpace = require('./hasNameSpace'),
-    modData = require('./moduleData');
+var getModule = require('./angular-hint-modules/getModule'),
+    start = require('./angular-hint-modules/start'),
+    storeNgAppAndView = require('./angular-hint-modules/storeNgAppAndView'),
+    storeUsedModules = require('./angular-hint-modules/storeUsedModules'),
+    hasNameSpace = require('./angular-hint-modules/hasNameSpace'),
+    modData = require('./angular-hint-modules/moduleData');
 
 var doc = Array.prototype.slice.call(document.getElementsByTagName('*')),
     originalAngularModule = angular.module,
