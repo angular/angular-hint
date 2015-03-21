@@ -1,4 +1,4 @@
-var hintLog = angular.hint = require('./log'),
+var hintLog = angular.hint = require('./../log'),
   MODULE_NAME = 'Modules',
   SEVERITY_ERROR = 1;
  module.exports = function(attrs, ngAppFound) {

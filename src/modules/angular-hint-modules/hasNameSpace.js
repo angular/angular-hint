@@ -1,4 +1,4 @@
-var hintLog = angular.hint = require('./log'),
+var hintLog = angular.hint = require('./../log'),
     MODULE_NAME = 'Modules',
     SEVERITY_SUGGESTION = 3;
 
