@@ -26,14 +26,28 @@ describe('hintEvents', function() {
   });
 
   // TODO: implement this
-  xit('should log a message if the path to handle an ng-event is not found', function() {
+  it('should log a message if the path to handle an ng-event is not found', function() {
     var elt = angular.element('<button ng-click="a.b.c()">Fake Increment</button>');
     $compile(elt)($rootScope);
     $rootScope.a = {};
 
     $rootScope.$digest();
     elt.triggerHandler('click');
+    // expect(angular.hint.log).not.toHaveBeenCalledWith('Events', 'a is undefined');
     expect(angular.hint.log).toHaveBeenCalledWith('Events', 'a.b is undefined');
+    expect(angular.hint.log).toHaveBeenCalledWith('Events', 'a.b.c is undefined');
+  });
+
+  it('should log a message if the path to handle an ng-event with array syntax is not found', function() {
+    var elt = angular.element('<button ng-click="a[\'b\'].c()">Fake Increment</button>');
+    $compile(elt)($rootScope);
+    $rootScope.a = {};
+
+    $rootScope.$digest();
+    elt.triggerHandler('click');
+    // expect(angular.hint.log).not.toHaveBeenCalledWith('Events', 'a is undefined');
+    expect(angular.hint.log).toHaveBeenCalledWith('Events', 'a[\'b\'] is undefined');
+    expect(angular.hint.log).toHaveBeenCalledWith('Events', 'a[\'b\'].c is undefined');
   });
 
 

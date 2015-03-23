@@ -48,8 +48,19 @@ function ngEventDirectivesDecorator(ngEventAttrName) {
       return function ngEventHandler(scope, element, attrs) {
         var boundFuncs = getFunctionNames(attrs[ngEventAttrName]);
         boundFuncs.forEach(function(boundFn) {
-          if ($parse(boundFn)(scope) === undefined) {
-            angular.hint.log(MODULE_NAME, boundFn + ' is undefined');
+          var property, propChain, lastProp = '';
+          while((property = boundFn.match(/^.+?([^\.\[])*/)) !== null) {
+            property = property[0];
+            propChain = lastProp + property;
+            if ($parse(propChain)(scope) === undefined) {
+              angular.hint.log(MODULE_NAME, propChain + ' is undefined');
+            }
+            boundFn = boundFn.replace(property, '');
+            lastProp += property;
+            if(boundFn.charAt(0) === '.') {
+              lastProp += '.';
+              boundFn = boundFn.substr(1);
+            }
           }
         });
 
