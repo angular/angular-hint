@@ -9,7 +9,7 @@ require('./src/modules/controllers');
 // require('./src/modules/dom');
 require('./src/modules/events');
 // require('./src/modules/interpolation');
-// require('./src/modules/modules');
+require('./src/modules/modules');
 require('./src/modules/scopes');
 
 // List of all possible modules

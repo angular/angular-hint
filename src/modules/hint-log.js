@@ -5,15 +5,12 @@
  * has a key for each ngHint module that corresponds to the messages
  * from that module.
  */
-var queuedMessages = {};
-
-angular.hint = angular.hint || {};
-
-var MESSAGE_TYPES = [
-  'error',
-  'warning',
-  'suggestion'
-];
+var queuedMessages = {},
+    MESSAGE_TYPES = [
+      'error',
+      'warning',
+      'suggestion'
+    ];
 
 /*
  * Add a message to the HintLog message queue. Messages are organized into categories
@@ -46,8 +43,6 @@ function flush() {
   return flushMessages;
 }
 
-angular.hint.onMessage = function(message) {};
-angular.hint.log = logMessage;
-angular.hint.flush = flush;
-
-module.exports = angular.hint;
+module.exports.onMessage = function(message) {};
+module.exports.logMessage = logMessage;
+module.exports.flush = flush;

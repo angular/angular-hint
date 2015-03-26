@@ -246,17 +246,17 @@ describe('module.controller', function() {
   });
 
   it('should accept name and constructor as separate arguments', function() {
-    angular.module('SampleApp', []).controller('SampleController', angular.noop);
+    angular.module('sampleApp', []).controller('SampleController', angular.noop);
     expect(angular.hint.log).not.toHaveBeenCalled();
 
-    angular.module('SampleApp', []).controller('sampleController', angular.noop);
+    angular.module('sampleApp', []).controller('sampleController', angular.noop);
     expect(angular.hint.log).toHaveBeenCalled();
     expect(angular.hint.log.calls.count()).toBe(1);
   });
 
 
   it('should accept a map of name/constructor pairs', function() {
-    angular.module('SampleApp', []).controller({
+    angular.module('sampleApp', []).controller({
       'SampleController': angular.noop,
       'sampleController': angular.noop
     });
