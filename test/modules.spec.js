@@ -1,6 +1,6 @@
 var hintLog = angular.hint;
-//var start = require('./src/start');
-var modData = require('./src/moduleData');
+var start = require('../src/modules/angular-hint-modules/start');
+var modData = require('../src/modules/angular-hint-modules/moduleData');
 
 describe('hintModules', function() {
   beforeEach(function() {
@@ -71,11 +71,11 @@ describe('hintModules', function() {
     start();
     var log = hintLog.flush();
     expect(log.Modules.suggestion[0]).toBe('The best practice for' +
-      ' module names is to use lowerCamelCase or dotted.segments. Check the name of "testmodule".');
+      ' module names is to use lowerCamelCase. Check the name of "testmodule".');
 
     angular.module('Testmodule', []);
     expect(hintLog.flush().Modules.suggestion[0]).toBe('The best practice for' +
-      ' module names is to use lowerCamelCase or dotted.segments. Check the name of "Testmodule".');
+      ' module names is to use lowerCamelCase. Check the name of "Testmodule".');
   });
 });
 
@@ -87,14 +87,15 @@ describe('hintModules integration', function() {
     modData.loadedModules = {};
     modData.createdMulti = {};
 
-    angular.module('ngHintControllers', []);
-    angular.module('ngHintDirectives', []);
-    angular.module('ngHintDom', []);
-    angular.module('ngHintEvents', []);
-    angular.module('ngHintInterpolation', []);
-    angular.module('ngHintScopes', []);
-    angular.module('ng', []);
-    angular.module('ngLocale', []);
+    // this blows other modules up sky high
+    //angular.module('ngHintControllers', []);
+    //angular.module('ngHintDirectives', []);
+    //angular.module('ngHintDom', []);
+    //angular.module('ngHintEvents', []);
+    //angular.module('ngHintInterpolation', []);
+    //angular.module('ngHintScopes', []);
+    //angular.module('ng', []);
+    //angular.module('ngLocale', []);
 
     start();
     expect(hintLog.flush()['Modules']).not.toBeDefined();
