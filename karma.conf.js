@@ -17,7 +17,9 @@ module.exports = function(config) {
       'test/*.spec.js'
     ],
     preprocessors: {
-      'hint.js': ['browserify']
+      'hint.js': ['browserify'],
+      //todo ethan - make this pattern less ugly
+      'test/{modules,getModule,getNgAppMod,getUndeclaredModules,getUnusedModules,hasNameSpace,inAttrsOrClasses,normalizeAttribute}.spec.js': ['browserify']
     },
     browsers: ['Chrome'],
     browserify: {

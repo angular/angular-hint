@@ -20,7 +20,7 @@ var AVAILABLE_MODULES = [
 //  'ngHintDom',
   'ngHintEvents',
 //  'ngHintInterpolation',
-//  'ngHintModules',
+  'ngHintModules',
   'ngHintScopes'
 ];
 
