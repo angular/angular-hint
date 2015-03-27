@@ -27,10 +27,7 @@
   "dependencies": {
     "angular-hint-directives": "~0.2.0",
     "angular-hint-dom": "~0.5.0",
-    "angular-hint-events": "~0.3.0",
     "angular-hint-interpolation": "~0.3.0",
-    "angular-hint-modules": "~0.4.0",
-    "angular-hint-scopes": "~0.2.0",
     "debounce-on": "0.0.0",
     "suggest-it": "0.0.1"
   },
