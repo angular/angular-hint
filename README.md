@@ -17,7 +17,7 @@ Example:
 <!doctype html>
 <html ng-app="sample" ng-hint>
   ...
-  <script src="../../bower_components/angular/angular.js"></script>
+  <script src="../../node_modules/angular/angular.js"></script>
   <script src="../../dist/hint.js"></script>
   ...
 </html>
@@ -32,7 +32,7 @@ Example:
 <!doctype html>
 <html ng-app="sample" ng-hint-include="controllers dom">
   ...
-  <script src="../../bower_components/angular/angular.js"></script>
+  <script src="../../node_modules/angular/angular.js"></script>
   <script src="../../dist/hint.js"></script>
   ...
 </html>
@@ -42,7 +42,7 @@ Example:
 <!doctype html>
 <html ng-app="sample" ng-hint-exclude="modules">
   ...
-  <script src="../../bower_components/angular/angular.js"></script>
+  <script src="../../node_modules/angular/angular.js"></script>
   <script src="../../dist/hint.js"></script>
   ...
 </html>
