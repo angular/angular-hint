@@ -1,5 +1,8 @@
 'use strict';
 
+// Set up the event stuffs
+require('./src/modules/hintEmitter');
+
 // Create pipe for all hint messages from different modules
 require('./src/modules/log');
 
