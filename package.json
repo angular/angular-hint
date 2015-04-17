@@ -29,6 +29,7 @@
     "angular-hint-dom": "~0.5.0",
     "angular-hint-interpolation": "~0.3.0",
     "debounce-on": "0.0.0",
+    "eventemitter2": "^0.4.14",
     "suggest-it": "0.0.1"
   },
   "devDependencies": {
