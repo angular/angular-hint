@@ -139,7 +139,7 @@ describe('ngHintScopes', function() {
       jasmine.clock().tick(10);
 
       expect(hint.emit).toHaveBeenCalled();
-      var args = getArgsOfNthCall(4);
+      var args = getArgsOfNthCall(5);
       expect(args[0]).toBe('model:change');
 
       expect(args[1]).toEqual({
@@ -149,7 +149,7 @@ describe('ngHintScopes', function() {
         value : '{"c":2}'
       });
 
-      args = getArgsOfNthCall(5);
+      args = getArgsOfNthCall(6);
       expect(args[0]).toBe('model:change');
 
       expect(args[1]).toEqual({

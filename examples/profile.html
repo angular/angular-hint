@@ -1,0 +1,62 @@
+<!doctype html>
+<html ng-app="profileApp" ng-hint>
+<!-- The intent of this example file is to show how an Angular app might consume data produced by ng-hint (in this case profiling data) -->
+<head>
+  <meta charset="utf-8">
+  <title>Consuming ng-hint data</title>
+  <link rel="icon" href="https://angularjs.org/favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <header>
+    <h1> Consuming ng-hint data </h1>
+  </header>
+  <div id="subtitle1">
+    Here's where you generate lots of numbers to stare at while "hmmmmm"ing loudly
+  </div>
+  <div ng-controller="ProfileController">
+    <button ng-click="clickButton()">Trigger a digest</button>
+    <ul>
+      <li ng-repeat="digest in digests">
+        Digest #{{::$index}}: {{::digest.time }}
+        <!-- There's a bug in scopes.js
+        where we break one-time bindings
+
+        Without one-time bindings, the following code
+        leads to a rather large number of watchers rather quickly
+        <table>
+          <tr ng-repeat="watcher in ::digest.events">
+            <td>{{::watcher.watch }}</td>
+            <td>{{::watcher.time }}</td>
+          </tr>
+        </table> -->
+      </li>
+    </ul>
+  </div>
+
+  <script src="../node_modules/angular/angular.js"></script>
+  <script src="../dist/hint.js"></script>
+  <script>
+    angular.module('profileApp', [])
+      /**
+      * Best practice: declare controllers on modules rather than on global scope.
+      **/
+      .controller('ProfileController', ['$scope', 'HintService', function($scope, HintService) {
+        $scope.buttonClick = function () {
+          // A digest is triggered, even for a noop!
+        };
+
+        $scope.digests = HintService;
+    }])
+    .service('HintService', function () {
+      var digests = [];
+      angular.hint.on('scope:digest', function (event) {
+        console.log(event);
+        digests.push(event);
+      });
+      return digests;
+    });
+  </script>
+</body>
+
+</html>
