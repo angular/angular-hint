@@ -72,63 +72,74 @@ function decorateRootScope($delegate, $parse) {
       });
   };
 
-  var debouncedEmit = debounceOn(hint.emit, 10, function (params) {
-    return params.id + params.path;
-  });
-
-
   var scopePrototype = ('getPrototypeOf' in Object) ?
       Object.getPrototypeOf($delegate) : $delegate.__proto__;
 
-  // var _watch = scopePrototype.$watch;
-  // scopePrototype.$watch = function (watchExpression, reactionFunction) {
-  //   var watchStr = humanReadableWatchExpression(watchExpression);
-  //   var scopeId = this.$id;
-  //   if (typeof watchExpression === 'function') {
-  //     arguments[0] = function () {
-  //       var start = perf.now();
-  //       var ret = watchExpression.apply(this, arguments);
-  //       var end = perf.now();
-  //       hint.emit('scope:watch', {
-  //         id: scopeId,
-  //         watch: watchStr,
-  //         time: end - start
-  //       });
-  //       return ret;
-  //     };
-  //   } else {
-  //     var thatScope = this;
-  //     arguments[0] = function () {
-  //       var start = perf.now();
-  //       var ret = thatScope.$eval(watchExpression);
-  //       var end = perf.now();
-  //       hint.emit('scope:watch', {
-  //         id: scopeId,
-  //         watch: watchStr,
-  //         time: end - start
-  //       });
-  //       return ret;
-  //     };
-  //   }
+  var _watch = scopePrototype.$watch;
+  var _digestEvents = [];
+  scopePrototype.$watch = function (watchExpression, reactionFunction) {
+    var watchStr = humanReadableWatchExpression(watchExpression);
+    var scopeId = this.$id;
+    if (typeof watchExpression === 'function') {
+      arguments[0] = function () {
+        var start = perf.now();
+        var ret = watchExpression.apply(this, arguments);
+        var end = perf.now();
+        _digestEvents.push({
+          eventType: 'scope:watch',
+          id: scopeId,
+          watch: watchStr,
+          time: end - start
+        });
+        return ret;
+      };
+    } else {
+      var thatScope = this;
+      arguments[0] = function () {
+        var start = perf.now();
+        var ret = thatScope.$eval(watchExpression);
+        var end = perf.now();
+        _digestEvents.push({
+          eventType: 'scope:watch',
+          id: scopeId,
+          watch: watchStr,
+          time: end - start
+        });
+        return ret;
+      };
+    }
 
-  //   if (typeof reactionFunction === 'function') {
-  //     var applyStr = reactionFunction.toString();
-  //     arguments[1] = function () {
-  //       var start = perf.now();
-  //       var ret = reactionFunction.apply(this, arguments);
-  //       var end = perf.now();
-  //       hint.emit('scope:reaction', {
-  //         id: this.$id,
-  //         watch: watchStr,
-  //         time: end - start
-  //       });
-  //       return ret;
-  //     };
-  //   }
+    if (typeof reactionFunction === 'function') {
+      arguments[1] = function () {
+        var start = perf.now();
+        var ret = reactionFunction.apply(this, arguments);
+        var end = perf.now();
+        _digestEvents.push({
+          eventType: 'scope:reaction',
+          id: this.$id,
+          watch: watchStr,
+          time: end - start
+        });
+        return ret;
+      };
+    }
 
-  //   return _watch.apply(this, arguments);
-  // };
+    return _watch.apply(this, arguments);
+  };
 
+  var _digest = scopePrototype.$digest;
+  scopePrototype.$digest = function (fn) {
+    _digestEvents = [];
+    var start = perf.now();
+    var ret = _digest.apply(this, arguments);
+    var end = perf.now();
+    hint.emit('scope:digest', {
+      id: this.$id,
+      time: end - start,
+      events: _digestEvents
+    });
+    return ret;
+  };
 
   var _destroy = scopePrototype.$destroy;
   scopePrototype.$destroy = function () {
@@ -179,17 +190,6 @@ function decorateRootScope($delegate, $parse) {
       }
     }
   }
-
-
-  // var _digest = scopePrototype.$digest;
-  // scopePrototype.$digest = function (fn) {
-  //   var start = perf.now();
-  //   var ret = _digest.apply(this, arguments);
-  //   var end = perf.now();
-  //   hint.emit('scope:digest', { id: this.$id, time: end - start });
-  //   return ret;
-  // };
-
 
   var _apply = scopePrototype.$apply;
   scopePrototype.$apply = function (fn) {
@@ -255,7 +255,7 @@ function decorateDollaCompile ($delegate) {
         descriptor: descriptor
       });
       return elt;
-    }
+    };
   };
 
   // TODO: test this
