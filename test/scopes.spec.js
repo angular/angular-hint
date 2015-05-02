@@ -96,6 +96,10 @@ describe('ngHintScopes', function() {
       jasmine.clock().install();
     });
 
+    afterEach(function() {
+      jasmine.clock().uninstall();
+    });
+
     it('should emit when registering a watch', function() {
       hint.watch(scope.$id, 'a.b.c');
       jasmine.clock().tick(10);
@@ -139,7 +143,7 @@ describe('ngHintScopes', function() {
       jasmine.clock().tick(10);
 
       expect(hint.emit).toHaveBeenCalled();
-      var args = getArgsOfNthCall(5);
+      var args = getArgsOfNthCall(4);
       expect(args[0]).toBe('model:change');
 
       expect(args[1]).toEqual({
@@ -149,7 +153,7 @@ describe('ngHintScopes', function() {
         value : '{"c":2}'
       });
 
-      args = getArgsOfNthCall(6);
+      args = getArgsOfNthCall(5);
       expect(args[0]).toBe('model:change');
 
       expect(args[1]).toEqual({
