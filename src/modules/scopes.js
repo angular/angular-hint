@@ -78,6 +78,10 @@ function decorateRootScope($delegate, $parse) {
   var _watch = scopePrototype.$watch;
   var _digestEvents = [];
   scopePrototype.$watch = function (watchExpression, reactionFunction) {
+    if (typeof watchExpression === 'string' &&
+        isOneTimeBindExp(watchExpression)) {
+      return _watch.apply(this, arguments);
+    }
     var watchStr = humanReadableWatchExpression(watchExpression);
     var scopeId = this.$id;
     if (typeof watchExpression === 'function') {
@@ -306,4 +310,10 @@ function humanReadableWatchExpression (fn) {
     fn = fn.name;
   }
   return fn.toString();
+}
+
+function isOneTimeBindExp(exp) {
+  // this is the same code angular 1.3.15 has to check
+  // for a one time bind expression
+  return exp.charAt(0) === ':' && exp.charAt(1) === ':';
 }

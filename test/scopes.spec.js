@@ -10,6 +10,68 @@ describe('ngHintScopes', function() {
     $rootScope = _$rootScope_;
   }));
 
+  describe('scope.$watch', function() {
+    var scope;
+
+    beforeEach(function() {
+      scope = $rootScope.$new();
+      scope.a = { b: 'hello' };
+      spyOn(hint, 'emit');
+    });
+
+    it('should run perf timers for string expressions', function() {
+      var calls = hint.emit.calls;
+      scope.$watch('a.b', function() {});
+      expect(calls.count()).toBe(0);
+
+      scope.$apply();
+      var evt = calls.mostRecent().args[1].events[0];
+      expect(calls.count()).toBe(1);
+      expect(evt.time).toEqual(jasmine.any(Number));
+      evt.time = null
+      expect(evt).toEqual({
+        eventType: 'scope:watch',
+        id: scope.$id,
+        watch: 'a.b',
+        time: null
+      });
+
+      scope.$apply();
+      expect(calls.count()).toBe(2);
+      var evt = calls.mostRecent().args[1].events[0];
+      expect(evt.time).toEqual(jasmine.any(Number));
+      evt.time = null
+      expect(evt).toEqual({
+        eventType: 'scope:watch',
+        id: scope.$id,
+        watch: 'a.b',
+        time: null
+      });
+
+    });
+
+    if (angular.version.minor >= 3) {
+      it('should not run perf timers for one time bind expressions', function() {
+        var calls = hint.emit.calls;
+        scope.$watch('::a.b', function() {});
+        expect(calls.count()).toBe(0);
+
+        scope.$apply();
+        var evt = calls.mostRecent().args[1].events[0];
+        // this is the watch angular registers and deregisters on $$postDigest
+        // for one time watch expressions
+        expect(calls.count()).toBe(1);
+        expect(evt.eventType).toBe('scope:watch');
+        expect(evt.watch).toBe('oneTimeWatch');
+
+        scope.$apply()
+        var evt = calls.mostRecent().args[1].events[0];
+        expect(calls.count()).toBe(2);
+        expect(evt).toBeUndefined();
+      });
+    }
+  });
+
   // TODO: revisit this when I figure out a good way to make this
   //       perform; see: https://github.com/angular/angular-hint-scopes/issues/2
   // describe('$rootScope.$watch', function() {
