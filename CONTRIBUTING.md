@@ -225,12 +225,11 @@ The following steps describe how an AngularHint module should be developed.
   - Each AngularHint module should load its own dependencies using `browserify`. For instance, AngularHintDOM depends on the library `domInterceptor`. This dependency is included within AngularHintDom by the browserify `require` function.
   - All AngularHint modules should load AngularHintLog as a dependency, see #3.
 
-3. Message Logging
+3. Events
 
-All AngularHint modules should use AngularHintLog to log their messages. This creates a standard pipeline for
-all AngularHint messages.
+All AngularHint modules should use `hint.emit` to emit their events. This creates a standard pipeline for all AngularHint events.
 
-To use AngularHintLog, see its [README.md](https://github.com/angular/angular-hint-log#angular-hint-log).
+`angular.hint` is an instance of [EventEmitter2](https://github.com/asyncly/EventEmitter2).
 
 4. Module Testing
 
