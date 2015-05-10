@@ -12,17 +12,17 @@ describe('hintEvents', function() {
     $rootScope = _$rootScope_;
     $compile = _$compile_;
     $controller = _$controller_;
-    spyOn(angular.hint, 'log').and.callThrough();
+    spyOn(angular.hint, 'emit').and.callThrough();
   }));
 
-  it('should log a message if the path to handle an ng-event is not found', function() {
+  it('should emit a message if the path to handle an ng-event is not found', function() {
     var elt = angular.element('<button ng-click="a.b.c()">Fake Increment</button>');
     $compile(elt)($rootScope);
 
     $rootScope.$digest();
     elt.triggerHandler('click');
     // TODO: fix this                                       'a' is undefined
-    expect(angular.hint.log).toHaveBeenCalledWith('Events', 'a.b.c is undefined');
+    expect(angular.hint.emit).toHaveBeenCalledWith('Events:undef', 'a.b.c is undefined');
   });
 
   // TODO: implement this
@@ -33,9 +33,9 @@ describe('hintEvents', function() {
 
     $rootScope.$digest();
     elt.triggerHandler('click');
-    // expect(angular.hint.log).not.toHaveBeenCalledWith('Events', 'a is undefined');
-    expect(angular.hint.log).toHaveBeenCalledWith('Events', 'a.b is undefined');
-    expect(angular.hint.log).toHaveBeenCalledWith('Events', 'a.b.c is undefined');
+    // expect(angular.hint.emit).not.toHaveBeenCalledWith('Events:undef', 'a is undefined');
+    expect(angular.hint.emit).toHaveBeenCalledWith('Events:undef', 'a.b is undefined');
+    expect(angular.hint.emit).toHaveBeenCalledWith('Events:undef', 'a.b.c is undefined');
   });
 
   it('should log a message if the path to handle an ng-event with array syntax is not found', function() {
@@ -45,9 +45,9 @@ describe('hintEvents', function() {
 
     $rootScope.$digest();
     elt.triggerHandler('click');
-    // expect(angular.hint.log).not.toHaveBeenCalledWith('Events', 'a is undefined');
-    expect(angular.hint.log).toHaveBeenCalledWith('Events', 'a[\'b\'] is undefined');
-    expect(angular.hint.log).toHaveBeenCalledWith('Events', 'a[\'b\'].c is undefined');
+    // expect(angular.hint.emit).not.toHaveBeenCalledWith('Events:undef', 'a is undefined');
+    expect(angular.hint.emit).toHaveBeenCalledWith('Events:undef', 'a[\'b\'] is undefined');
+    expect(angular.hint.emit).toHaveBeenCalledWith('Events:undef', 'a[\'b\'].c is undefined');
   });
 
 

@@ -1,10 +1,7 @@
 'use strict';
 
-// Set up the event stuffs
-require('./src/modules/hintEmitter');
-
 // Create pipe for all hint messages from different modules
-require('./src/modules/log');
+require('./src/modules/hintEmitter');
 
 // Load angular hint modules
 require('./src/modules/controllers');
@@ -76,7 +73,7 @@ function loadModules() {
   } else if (document.querySelector('[ng-hint]')) {
     modules = AVAILABLE_MODULES;
   } else {
-    angular.hint.log('General', 'ngHint is included on the page, but is not active because ' +
+    angular.hint.emit('general:noinclude', 'ngHint is included on the page, but is not active because ' +
       'there is no `ng-hint` attribute present', SEVERITY_WARNING);
   }
   return modules;
@@ -94,7 +91,7 @@ function hintModulesFromElement (elt) {
 
   return selectedModules.map(hintModuleName).filter(function (name) {
     return (AVAILABLE_MODULES.indexOf(name) > -1) ||
-      angular.hint.log('General', 'Module ' + name + ' could not be found', SEVERITY_WARNING);
+      angular.hint.emit('general:404module', 'Module ' + name + ' could not be found', SEVERITY_WARNING);
   });
 }
 

@@ -18,10 +18,10 @@ describe('getNgAppMod()', function() {
         'id': {value: 'idName'},
         'ng-app': {value: 'testModule'}
     };
+    spyOn(angular.hint, 'emit').and.callThrough();
     var foundNgApp = getNgAppMod(attributes, false);
     getNgAppMod(attributes, foundNgApp);
-    var log = hintLog.flush();
-    expect(log.Modules.error).toEqual(['ng-app may only be included once. The module ' +
-      '"testModule" was not used to bootstrap because ng-app was already included.']);
+    expect(angular.hint.emit).toHaveBeenCalledWith('Modules', 'ng-app may only be included once. The module ' +
+      '"testModule" was not used to bootstrap because ng-app was already included.', 1);
   });
 });

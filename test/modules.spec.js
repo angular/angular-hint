@@ -15,34 +15,30 @@ describe('hintModules', function() {
     modData.createdMulti = {
       'testModule': ['testModule']
     };
-  });
-
-  afterEach(function() {
-    hintLog.flush();
+    spyOn(angular.hint, 'emit').and.callThrough();
   });
 
   it('should identify modules created and not loaded', function() {
     angular.module('createdAndNotLoaded', []);
     start();
-    expect(hintLog.flush().Modules.warning[0]).toBe('Module "createdAndNotLoaded" was' +
-      ' created but never loaded.');
+    expect(angular.hint.emit).toHaveBeenCalledWith('Modules', 'Module "createdAndNotLoaded" was' +
+      ' created but never loaded.', 2);
   });
 
 
   it('should identify modules loaded that do not exist', function() {
     angular.module('testModule', ['doesntExist']);
     start();
-    var log = hintLog.flush();
-    expect(log.Modules.error[0]).toBe('Module "doesntExist" was loaded but' +
-      ' does not exist.');
+    expect(angular.hint.emit).toHaveBeenCalledWith('Modules', 'Module "doesntExist" was loaded but' +
+      ' does not exist.', 1);
   });
 
 
   it('should identify modules that have been loaded multiple times', function() {
     angular.module('testModule', []);
     start();
-    expect(hintLog.flush().Modules.warning[1]).toBe('Multiple modules with name ' +
-      '"testModule" are being created and they will overwrite each other.');
+    expect(angular.hint.emit).toHaveBeenCalledWith('Modules', 'Multiple modules with name ' +
+      '"testModule" are being created and they will overwrite each other.', 2);
   });
 
 
@@ -50,8 +46,8 @@ describe('hintModules', function() {
     angular.module('moduleDuplicate', []);
     angular.module('moduleDuplicate', []);
     start();
-    expect(hintLog.flush().Modules.warning[3]).toBe('Multiple modules with name ' +
-      '"moduleDuplicate" are being created and they will overwrite each other.');
+    expect(angular.hint.emit).toHaveBeenCalledWith('Modules', 'Multiple modules with name ' +
+      '"moduleDuplicate" are being created and they will overwrite each other.', 2);
   });
 
 
@@ -59,27 +55,27 @@ describe('hintModules', function() {
     angular.module('testModule2', []);
     angular.module('testModule2').controller('controller', [function(){}]);
     start();
-    var log = hintLog.flush().Modules;
-    var duplicateMessages = log.warning;
-    expect(duplicateMessages).not.toContain('Multiple modules with name "testModule2" are being ' +
-      'created and they will overwrite each other.');
+    expect(angular.hint.emit).not.toHaveBeenCalledWith('Modules', 'Multiple modules with name "testModule2" are being ' +
+      'created and they will overwrite each other.', 2);
   });
 
 
   it('should warn if modules are not named with lowerCamelCase or dotted.segments', function() {
     angular.module('testmodule', []);
     start();
-    var log = hintLog.flush();
-    expect(log.Modules.suggestion[0]).toBe('The best practice for' +
-      ' module names is to use lowerCamelCase. Check the name of "testmodule".');
+    expect(angular.hint.emit).toHaveBeenCalledWith('Modules', 'The best practice for' +
+      ' module names is to use lowerCamelCase. Check the name of "testmodule".', 3);
 
     angular.module('Testmodule', []);
-    expect(hintLog.flush().Modules.suggestion[0]).toBe('The best practice for' +
-      ' module names is to use lowerCamelCase. Check the name of "Testmodule".');
+    expect(angular.hint.emit).toHaveBeenCalledWith('Modules', 'The best practice for' +
+      ' module names is to use lowerCamelCase. Check the name of "Testmodule".', 3);
   });
 });
 
 describe('hintModules integration', function() {
+  beforeEach(function () {
+    spyOn(angular.hint, 'emit').and.callThrough();
+  });
   it('should not warn about itself or other ngHintModules', function() {
 
     // what is this i dont even
@@ -98,6 +94,6 @@ describe('hintModules integration', function() {
     //angular.module('ngLocale', []);
 
     start();
-    expect(hintLog.flush()['Modules']).not.toBeDefined();
+    expect(angular.hint.emit).not.toHaveBeenCalled();
   });
 });

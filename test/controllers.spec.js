@@ -15,12 +15,11 @@ describe('controllerDecorator', function() {
     $controller = _$controller_;
     $rootScope = _$rootScope_;
     $compile = _$compile_;
-    spyOn(angular.hint, 'log').and.callThrough();
+    spyOn(angular.hint, 'emit').and.callThrough();
   }));
 
 
   afterEach(function () {
-    angular.hint.flush();
     delete window.MockController;
   });
 
@@ -36,10 +35,10 @@ describe('controllerDecorator', function() {
     } catch (e) {};
 
     if (angular.version.minor < 3) {
-      expect(angular.hint.log).toHaveBeenCalledWith('Controllers', 'add `MockController` to a module', SEVERITY_WARNING,
+      expect(angular.hint.emit).toHaveBeenCalledWith('Controllers:global', 'add `MockController` to a module', SEVERITY_WARNING,
           'Using global functions as controllers is against Angular best practices and depricated in Angular 1.3 and up');
     } else {
-      expect(angular.hint.log).toHaveBeenCalledWith('Controllers', 'add `MockController` to a module', SEVERITY_ERROR,
+      expect(angular.hint.emit).toHaveBeenCalledWith('Controllers:global', 'add `MockController` to a module', SEVERITY_ERROR,
           'Using global functions as controllers is against Angular best practices and depricated in Angular 1.3 and up');
     }
   });
@@ -82,7 +81,7 @@ describe('controllerDecorator', function() {
                               '</div>');
     $compile(elm)(scope);
     $rootScope.$digest();
-    expect(angular.hint.log).not.toHaveBeenCalled();
+    expect(angular.hint.emit).not.toHaveBeenCalled();
   });
 
 
@@ -149,7 +148,7 @@ describe('controllerDecorator', function() {
                               '</div>');
     $compile(elm)(scope);
     $rootScope.$digest();
-    expect(angular.hint.log).toHaveBeenCalledWith('Controllers',
+    expect(angular.hint.emit).toHaveBeenCalledWith('Controllers:rename',
         'Consider renaming `globalFunction` to `GlobalFunctionController`.',
         SEVERITY_WARNING,
         'Name controllers according to best practices');
@@ -170,7 +169,7 @@ describe('controllerDecorator', function() {
     $controllerProvider.register('SampleController', function() {});
     $controller('SampleController');
 
-    expect(angular.hint.log).not.toHaveBeenCalledWith('Controllers', 'It is against Angular' +
+    expect(angular.hint.emit).not.toHaveBeenCalledWith('Controllers', 'It is against Angular' +
       'best practices to instantiate a controller on the window. This behavior is deprecated in' +
       ' Angular 1.3.0', (angular.version.minor < 3 ? SEVERITY_WARNING : SEVERITY_ERROR));
   });
@@ -179,7 +178,7 @@ describe('controllerDecorator', function() {
   it('should warn if a controller name does not begin with an uppercase letter', function(){
     $controllerProvider.register('sampleController', function() {});
     $controller('sampleController');
-    expect(angular.hint.log).toHaveBeenCalledWith('Controllers',
+    expect(angular.hint.emit).toHaveBeenCalledWith('Controllers:rename',
         'Consider renaming `sampleController` to `SampleController`.',
         SEVERITY_WARNING,
         'Name controllers according to best practices');
@@ -189,14 +188,14 @@ describe('controllerDecorator', function() {
   it('should not warn if a controller name begins with an uppercase letter', function(){
     $controllerProvider.register('SampleController', function() {});
     $controller('SampleController');
-    expect(angular.hint.log).not.toHaveBeenCalled();
+    expect(angular.hint.emit).not.toHaveBeenCalled();
   });
 
 
   it('should warn if a controller name does not include Controller', function(){
     $controllerProvider.register('Sample', function() {});
     $controller('Sample');
-    expect(angular.hint.log).toHaveBeenCalledWith('Controllers',
+    expect(angular.hint.emit).toHaveBeenCalledWith('Controllers:rename',
         'Consider renaming `Sample` to `SampleController`.',
         SEVERITY_WARNING,
         'Name controllers according to best practices');
@@ -206,7 +205,7 @@ describe('controllerDecorator', function() {
   it('should warn if a controller name does not end with Controller', function(){
     $controllerProvider.register('SampleControllerYay', function() {});
     $controller('SampleControllerYay');
-    expect(angular.hint.log).toHaveBeenCalledWith('Controllers',
+    expect(angular.hint.emit).toHaveBeenCalledWith('Controllers:rename',
         'Consider renaming `SampleControllerYay` to `SampleControllerYayController`.',
         SEVERITY_WARNING,
         'Name controllers according to best practices');
@@ -216,19 +215,7 @@ describe('controllerDecorator', function() {
   it('should not warn if a controller ends with Controller', function(){
     $controllerProvider.register('SampleController', function() {});
     $controller('SampleController');
-    expect(angular.hint.log).not.toHaveBeenCalled();
-  });
-
-
-  it('should collect all hinting messages using angular.hint', function() {
-    var sampleControl = $controller(MockController);
-    $controllerProvider.register('sample', function() {});
-    $controller('sample');
-    var log = angular.hint.flush();
-    var totalNumberOfMessages = log['Controllers'].warning.length +
-                                (log['Controllers'].error || []).length;
-
-    expect(totalNumberOfMessages).toBe(1);
+    expect(angular.hint.emit).not.toHaveBeenCalled();
   });
 });
 
@@ -238,20 +225,16 @@ describe('module.controller', function() {
 
   beforeEach(module('ngHintControllers'));
   beforeEach(function() {
-    spyOn(angular.hint, 'log').and.callThrough();
-  });
-
-  afterEach(function () {
-    angular.hint.flush();
+    spyOn(angular.hint, 'emit').and.callThrough();
   });
 
   it('should accept name and constructor as separate arguments', function() {
     angular.module('sampleApp', []).controller('SampleController', angular.noop);
-    expect(angular.hint.log).not.toHaveBeenCalled();
+    expect(angular.hint.emit).not.toHaveBeenCalled();
 
     angular.module('sampleApp', []).controller('sampleController', angular.noop);
-    expect(angular.hint.log).toHaveBeenCalled();
-    expect(angular.hint.log.calls.count()).toBe(1);
+    expect(angular.hint.emit).toHaveBeenCalled();
+    expect(angular.hint.emit.calls.count()).toBe(1);
   });
 
 
@@ -260,7 +243,7 @@ describe('module.controller', function() {
       'SampleController': angular.noop,
       'sampleController': angular.noop
     });
-    expect(angular.hint.log).toHaveBeenCalled();
-    expect(angular.hint.log.calls.count()).toBe(1);
+    expect(angular.hint.emit).toHaveBeenCalled();
+    expect(angular.hint.emit.calls.count()).toBe(1);
   });
 });

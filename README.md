@@ -74,9 +74,6 @@ AngularHint is composed of several small modules that you may want to use indivi
 * [AngularHintInterpolation](https://github.com/angular/angular-hint-interpolation)
 * [AngularHintModules](https://github.com/angular/angular-hint-modules)
 
-AngularHint uses [AngularHintLog](https://github.com/angular/angular-hint-log) to provide
-logging functionality.
-
 ## Interested in Contributing?
 See the [Contributing Guidelines](https://github.com/angular/angular-hint/blob/master/CONTRIBUTING.md)
 

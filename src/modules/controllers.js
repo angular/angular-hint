@@ -47,7 +47,7 @@ function processController(ctrlName) {
 }
 
 function sendMessageForGlobalController(name) {
-  angular.hint.log(MODULE_NAME,
+  angular.hint.emit(MODULE_NAME + ':global',
     'add `' + name + '` to a module',
     angular.version.minor <= 2 ? SEVERITY_WARNING : SEVERITY_ERROR,
     CATEGORY_GLOBAL_CONTROLLER);
@@ -62,7 +62,7 @@ function sendMessageForControllerName(name) {
     newName = addControllerSuffix(newName);
   }
   if (name !== newName) {
-    angular.hint.log(MODULE_NAME,
+    angular.hint.emit(MODULE_NAME + ':rename',
       'Consider renaming `' + name + '` to `' + newName + '`.',
       SEVERITY_WARNING,
       CATEGORY_CONTROLLER_NAME);

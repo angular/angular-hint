@@ -53,7 +53,7 @@ function ngEventDirectivesDecorator(ngEventAttrName) {
             property = property[0];
             propChain = lastProp + property;
             if ($parse(propChain)(scope) === undefined) {
-              angular.hint.log(MODULE_NAME, propChain + ' is undefined');
+              angular.hint.emit(MODULE_NAME + ':undef', propChain + ' is undefined');
             }
             boundFn = boundFn.replace(property, '');
             lastProp += property;
