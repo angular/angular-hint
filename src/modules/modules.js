@@ -21,8 +21,11 @@ angular.module = function(name, requiresOriginal) {
   modules[name] = module;
   hasNameSpace(name);
   var modToCheck = getModule(name, true);
+  //check arguments to determine if called as setter or getter
+  var modIsSetter = arguments.length > 1; 
 
-  if(modToCheck && modToCheck.requiresOriginal !== module.requiresOriginal) {
+
+  if(modToCheck && modToCheck.requiresOriginal !== module.requiresOriginal && modIsSetter) {
     if(!modData.createdMulti[name]) {
       modData.createdMulti[name] = [getModule(name,true)];
     }
