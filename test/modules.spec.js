@@ -59,6 +59,14 @@ describe('hintModules', function() {
       'created and they will overwrite each other.', 2);
   });
 
+  it('should ignore modules loaded twice if one is being called without parameters', function() {
+    angular.module('testModule3', []);
+    angular.module('testModule3');
+    start();
+    expect(angular.hint.emit).not.toHaveBeenCalledWith('Modules', 'Multiple modules with name "testModule3" are ' +
+      'being created and they will overwrite each other.', 2);
+  });
+
 
   it('should warn if modules are not named with lowerCamelCase or dotted.segments', function() {
     angular.module('testmodule', []);
