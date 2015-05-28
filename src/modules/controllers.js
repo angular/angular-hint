@@ -15,8 +15,14 @@ var nameToControllerMap = {};
 * log a message if the controller is instantiated on the window
 */
 angular.module('ngHintControllers', []).
-  config(['$provide', function ($provide) {
+  config(['$provide', '$controllerProvider', function ($provide, $controllerProvider) {
     $provide.decorator('$controller', ['$delegate', controllerDecorator]);
+
+    var originalRegister = $controllerProvider.register;
+    $controllerProvider.register = function(name, constructor) {
+      stringOrObjectRegister(name);
+      originalRegister.apply($controllerProvider, arguments);
+    }
   }]);
 
 function controllerDecorator($delegate) {
@@ -25,7 +31,10 @@ function controllerDecorator($delegate) {
       var match = ctrl.match(CNTRL_REG);
       var ctrlName = (match && match[1]) || ctrl;
 
-      sendMessageForControllerName(ctrlName);
+      if (!nameToControllerMap[ctrlName]) {
+        sendMessageForControllerName(ctrlName);
+      }
+
       if (!nameToControllerMap[ctrlName] && typeof window[ctrlName] === 'function') {
         sendMessageForGlobalController(ctrlName);
       }
@@ -40,6 +49,14 @@ function controllerDecorator($delegate) {
 * Hint about the best practices for naming controllers.
 */
 var originalModule = angular.module;
+
+function stringOrObjectRegister(controllerName) {
+  if ((controllerName !== null) && (typeof controllerName === 'object')) {
+    Object.keys(controllerName).forEach(processController);
+  } else {
+    processController(controllerName);
+  }
+}
 
 function processController(ctrlName) {
   nameToControllerMap[ctrlName] = true;
@@ -98,11 +115,7 @@ angular.module = function() {
       originalController = module.controller;
 
   module.controller = function(controllerName, controllerConstructor) {
-    if ((controllerName !== null) && (typeof controllerName === 'object')) {
-      Object.keys(controllerName).forEach(processController);
-    } else {
-      processController(controllerName);
-    }
+    stringOrObjectRegister(controllerName);
     return originalController.apply(this, arguments);
   };
 

@@ -184,6 +184,20 @@ describe('controllerDecorator', function() {
         'Name controllers according to best practices');
   });
 
+  it('should only warn once about formatting of controller name', function() {
+    $controllerProvider.register('sampleController', function() {});
+    $controller('sampleController');
+    $controller('sampleController');
+    var formattingWarning = angular.hint.emit.calls.allArgs()
+      .filter(function(warningArray) {
+        return warningArray[0] === 'Controllers:rename' &&
+          warningArray[1] ===  'Consider renaming `sampleController`' +
+          ' to `SampleController`.' &&
+          warningArray[2] === SEVERITY_WARNING;
+      });
+    expect(formattingWarning.length).toBe(1);
+  });
+
 
   it('should not warn if a controller name begins with an uppercase letter', function(){
     $controllerProvider.register('SampleController', function() {});
