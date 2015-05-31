@@ -147,7 +147,7 @@ function decorateRootScope($delegate, $parse) {
 
   var _destroy = scopePrototype.$destroy;
   scopePrototype.$destroy = function () {
-    var id = this.id;
+    var id = this.$id;
 
     hint.emit('scope:destroy', { id: id });
 
