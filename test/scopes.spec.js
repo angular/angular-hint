@@ -128,7 +128,7 @@ describe('ngHintScopes', function() {
       var args = getArgsOfNthCall(0);
 
       expect(args[0]).toBe('scope:destroy');
-      expect(args[1].id).toBe(scope.id);
+      expect(args[1].id).toBe(scope.$id);
     });
   });
 
