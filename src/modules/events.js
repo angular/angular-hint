@@ -11,7 +11,7 @@ var getFunctionNames = function(str) {
   if (typeof str !== 'string') {
     return [];
   }
-  var results = str.replace(/\s+/g, '').split(/[\+\-\/\|\<\>\^=&!%~]/g).map(function(x) {
+  var results = str.replace(/\s+/g, '').split(/[\+\-\/\|\<\>\^=&!%~;]/g).map(function(x) {
     if (isNaN(+x)) {
       if (x.match(/\w+\(.*\)$/)){
         return x.substr(0, x.indexOf('('));

@@ -25,6 +25,37 @@ describe('hintEvents', function() {
     expect(angular.hint.emit).toHaveBeenCalledWith('Events:undef', 'a.b.c is undefined');
   });
 
+  it('should be able to handle expression with a semi colon at the end', function() {
+    var elt = angular.element('<button ng-click="a.b();">Fake Increment</button>');
+    var spy = jasmine.createSpy();
+    $rootScope.a = { b: spy }
+    $compile(elt)($rootScope);
+
+    $rootScope.$digest();
+    expect(spy).not.toHaveBeenCalledWith();
+    expect(angular.hint.emit).not.toHaveBeenCalledWith();
+  });
+
+  it('should be able to handle multiple statements separated by a semi colon', function() {
+    var elt = angular.element('<button ng-click="a.b.c(); a.b;">Fake Increment</button>');
+    var spy = jasmine.createSpy();
+    $rootScope.a = { b: { c: spy } }
+    $compile(elt)($rootScope);
+
+    $rootScope.$digest();
+    expect(spy).not.toHaveBeenCalledWith();
+    expect(angular.hint.emit).not.toHaveBeenCalledWith();
+  });
+
+  it('should report on multiple statements separated by a semi colon', function() {
+    var elt = angular.element('<button ng-click="a.b.c(); a.b">Fake Increment</button>');
+    $compile(elt)($rootScope);
+
+    $rootScope.$digest();
+    expect(angular.hint.emit).toHaveBeenCalledWith('Events:undef', 'a.b.c is undefined');
+    expect(angular.hint.emit).toHaveBeenCalledWith('Events:undef', 'a.b is undefined');
+  });
+
   // TODO: implement this
   it('should log a message if the path to handle an ng-event is not found', function() {
     var elt = angular.element('<button ng-click="a.b.c()">Fake Increment</button>');
