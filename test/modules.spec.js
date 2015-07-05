@@ -71,12 +71,12 @@ describe('hintModules', function() {
   it('should warn if modules are not named with lowerCamelCase or dotted.segments', function() {
     angular.module('testmodule', []);
     start();
-    expect(angular.hint.emit).toHaveBeenCalledWith('Modules', 'The best practice for' +
-      ' module names is to use lowerCamelCase. Check the name of "testmodule".', 3);
+    expect(angular.hint.emit).toHaveBeenCalledWith('Modules', 'Module names should be namespaced' +
+      ' with a dot (app.dashboard) or lowerCamelCase (appDashboard). Check the name of "testmodule".', 3);
 
     angular.module('Testmodule', []);
     expect(angular.hint.emit).toHaveBeenCalledWith('Modules', 'The best practice for' +
-      ' module names is to use lowerCamelCase. Check the name of "Testmodule".', 3);
+      ' module names is to use dot.case or lowerCamelCase. Check the name of "Testmodule".', 3);
   });
 });
 
