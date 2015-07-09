@@ -56,6 +56,33 @@ describe('hintEvents', function() {
     expect(angular.hint.emit).toHaveBeenCalledWith('Events:undef', 'a.b is undefined');
   });
 
+  it('should be able to check strings expressions with operator characters in angular expressions', function() {
+    var elt = angular.element('<button ng-click="a.b.c = \'-hello>\';[\'array\']">Fake Increment</button>');
+    $rootScope.a = { b: { c: '' } }
+    $compile(elt)($rootScope);
+
+    $rootScope.$digest();
+    expect(angular.hint.emit).not.toHaveBeenCalledWith('Events:undef', 'a.b.c is undefined');
+  });
+
+  it('should be able to check multiple angular expressions including string expressions with operator characters', function() {
+    var elt = angular.element('<button ng-click="j.f.k;x.y.z = \'-hello\'"></button>');
+    $compile(elt)($rootScope);
+
+    $rootScope.$digest();
+    expect(angular.hint.emit).toHaveBeenCalledWith('Events:undef', 'x.y.z is undefined');
+    expect(angular.hint.emit).toHaveBeenCalledWith('Events:undef', 'j.f.k is undefined');
+  });
+
+  it('should be able to check expressions with operator characters in function invocation', function() {
+    var elt = angular.element('<button ng-click="showPanel(-1);move(a > b)"></button>');
+    $compile(elt)($rootScope);
+
+    $rootScope.$digest();
+    expect(angular.hint.emit).toHaveBeenCalledWith('Events:undef', 'showPanel is undefined');
+    expect(angular.hint.emit).toHaveBeenCalledWith('Events:undef', 'move is undefined');
+  });
+
   // TODO: implement this
   it('should log a message if the path to handle an ng-event is not found', function() {
     var elt = angular.element('<button ng-click="a.b.c()">Fake Increment</button>');

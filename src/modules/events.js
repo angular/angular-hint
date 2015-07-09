@@ -6,18 +6,43 @@
 var ngEventAttributes = require('../lib/event-directives'),
     MODULE_NAME = 'Events';
 
+/*
+ * Remove string expressions except property accessors.
+ * ex. abc["def"] = "gef"; // `removeStringExp` will remove "gef" but not "def".
+ */
+function removeStringExp(str) {
+  return str.replace(/"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'/g,
+    function(match, pos, full) {
+      // this is our lookaround code so that our regex doesn't become so
+      // complicated.
+      if (pos !== 0 && (match.length + pos) !== full.length &&
+          full[pos - 1] === '[' && full[pos + match.length] === ']') {
+           return match;
+      }
+      return '';
+    });
+}
 
 var getFunctionNames = function(str) {
   if (typeof str !== 'string') {
     return [];
   }
-  var results = str.replace(/\s+/g, '').split(/[\+\-\/\|\<\>\^=&!%~;]/g).map(function(x) {
-    if (isNaN(+x)) {
-      if (x.match(/\w+\(.*\)$/)){
-        return x.substr(0, x.indexOf('('));
+  // There are still a bunch of corner cases here where we aren't going to be able to handle
+  // but we shouldn't break the user's app and we should handle most common cases.
+  // example of corner cases: we can't check for properties inside of function
+  // arguments like `move(a.b.c)` with the current implementation
+  // or property accessors with parentheses in them
+  // like `prop["hello (world)"] = "test";`.
+  // To fully fix these issues we would need a full blown expression parser.
+  var results = removeStringExp(str.replace(/\s+/g, ''))
+    .replace(/\(.*?\)/g, '')
+    .split(/[\+\-\/\|\<\>\^=&!%~;]/g).map(function(x) {
+      if (isNaN(+x)) {
+        if (x.match(/\w+\(.*\)$/)){
+          return x.substr(0, x.indexOf('('));
+        }
+        return x;
       }
-      return x;
-    }
   }).filter(function(x){
     return x;
   });
