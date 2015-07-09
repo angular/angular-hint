@@ -63,17 +63,6 @@ $ npm run build
   it produces hints for correcting the sample application. In the `correctExample` directory
   there is an improved version of the sample application.
 
-## See Also
-
-AngularHint is composed of several small modules that you may want to use individually:
-
-* [AngularHintControllers](https://github.com/angular/angular-hint-controllers)
-* [AngularHintDirectives](https://github.com/angular/angular-hint-directives)
-* [AngularHintDom](https://github.com/angular/angular-hint-dom)
-* [AngularHintEvents](https://github.com/angular/angular-hint-events)
-* [AngularHintInterpolation](https://github.com/angular/angular-hint-interpolation)
-* [AngularHintModules](https://github.com/angular/angular-hint-modules)
-
 ## Interested in Contributing?
 See the [Contributing Guidelines](https://github.com/angular/angular-hint/blob/master/CONTRIBUTING.md)
 
