@@ -304,6 +304,9 @@ function byScopeId (scope) {
 }
 
 function humanReadableWatchExpression (fn) {
+  if (fn == null) {
+    return null;
+  }
   if (fn.exp) {
     fn = fn.exp;
   } else if (fn.name) {
