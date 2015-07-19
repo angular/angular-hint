@@ -132,21 +132,135 @@ describe('ngHintScopes', function() {
     });
   });
 
-  // describe('$rootScope.$apply', function() {
-  //   it('should fire a message when called', function() {
-  //     var scope = $rootScope.$new();
-  //     spyOn(hint, 'emit');
+  describe('$rootScope.$apply', function() {
+    beforeEach(function () {
+      jasmine.clock().install();
+    });
 
-  //     scope.$apply();
+    afterEach(function() {
+      jasmine.clock().uninstall();
+    });
 
-  //     expect(hint.emit).toHaveBeenCalled();
-  //     var args = hint.emit.calls[1].args;
+    //   it('should fire a message when called', function() {
+    //     var scope = $rootScope.$new();
+    //     spyOn(hint, 'emit');
 
-  //     expect(args[0]).toBe('scope:apply');
-  //     expect(args[1].id).toBe(scope.$id);
-  //     expect(args[1].time).toBeDefined();
-  //   });
-  // });
+    //     scope.$apply();
+
+    //     expect(hint.emit).toHaveBeenCalled();
+    //     var args = hint.emit.calls[1].args;
+
+    //     expect(args[0]).toBe('scope:apply');
+    //     expect(args[1].id).toBe(scope.$id);
+    //     expect(args[1].time).toBeDefined();
+    //   });
+
+    it('should cause model:change events to be emitted for all paths on current scope', function() {
+      var scope = $rootScope.$new();
+      scope.a = { b: { c: 1 } };
+      hint.watch(scope.$id, 'a.b.c');
+      jasmine.clock().tick(10);
+      spyOn(hint, 'emit');
+      scope.a.b.c = 2;
+      scope.$apply();
+      jasmine.clock().tick(10);
+
+      expect(hint.emit.calls.count()).toEqual(3);
+
+      var args = getArgsOfNthCall(0);
+      expect(args[0]).toBe('scope:digest');
+
+      args = getArgsOfNthCall(1);
+      expect(args[0]).toBe('model:change');
+      expect(args[1]).toEqual({
+        id : scope.$id,
+        path : 'a.b',
+        oldValue : '{"c":1}',
+        value : '{"c":2}'
+      });
+
+      args = getArgsOfNthCall(2);
+      expect(args[0]).toBe('model:change');
+      expect(args[1]).toEqual({
+        id : scope.$id,
+        path : 'a.b.c',
+        oldValue : 1,
+        value : 2
+      });
+    });
+
+    it('should cause model:change events to be emitted for all other watched scopes', function() {
+      var parentScope = $rootScope.$new();
+      var targetScope = parentScope.$new();
+      var childScope = targetScope.$new();
+      var siblingScope = parentScope.$new();
+
+      parentScope.a = 1;
+      childScope.b = 1;
+      siblingScope.c = 1;
+
+      hint.watch(parentScope.$id, 'a');
+      hint.watch(childScope.$id, 'b');
+      hint.watch(siblingScope.$id, 'c');
+      jasmine.clock().tick(10);
+      spyOn(hint, 'emit');
+      parentScope.a = 2;
+      childScope.b = 2;
+      siblingScope.c = 2;
+      targetScope.$apply();
+      jasmine.clock().tick(10);
+
+      expect(hint.emit.calls.count()).toEqual(4);
+
+      var args = getArgsOfNthCall(0);
+      expect(args[0]).toBe('scope:digest');
+
+      args = getArgsOfNthCall(1);
+      expect(args[0]).toBe('model:change');
+      expect(args[1]).toEqual({
+        id : parentScope.$id,
+        path : 'a',
+        oldValue : 1,
+        value : 2
+      });
+
+      args = getArgsOfNthCall(2);
+      expect(args[0]).toBe('model:change');
+      expect(args[1]).toEqual({
+        id : childScope.$id,
+        path : 'b',
+        oldValue : 1,
+        value : 2
+      });
+
+      args = getArgsOfNthCall(3);
+      expect(args[0]).toBe('model:change');
+      expect(args[1]).toEqual({
+        id : siblingScope.$id,
+        path : 'c',
+        oldValue : 1,
+        value : 2
+      });
+    });
+
+    it('should maintain the data type of the $id for the current angular version', function() {
+      var targetScope = $rootScope.$new();
+      targetScope.a = 1;
+      hint.watch(targetScope.$id, 'a');
+      jasmine.clock().tick(10);
+      spyOn(hint, 'emit');
+      targetScope.a = 2;
+
+      targetScope.$apply();
+      jasmine.clock().tick(10);
+
+      var args = getArgsOfNthCall(1);
+      expect(args[0]).toBe('model:change');
+
+      // expect strings for angular 1.2, integers for 1.3+
+      expect(args[1].id).toBe(targetScope.$id);
+    });
+  });
 
   describe('hint.watch', function() {
     var scope;
