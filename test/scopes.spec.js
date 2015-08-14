@@ -20,34 +20,35 @@ describe('ngHintScopes', function() {
     });
 
     it('should run perf timers for string expressions', function() {
-      var calls = hint.emit.calls;
       scope.$watch('a.b', function() {});
-      expect(calls.count()).toBe(0);
+      expect(hint.emit.calls.count()).toBe(0);
 
       scope.$apply();
-      var evt = calls.mostRecent().args[1].events[0];
-      expect(calls.count()).toBe(1);
-      expect(evt.time).toEqual(jasmine.any(Number));
-      evt.time = null
-      expect(evt).toEqual({
+      var expectedEvent = {
         eventType: 'scope:watch',
         id: scope.$id,
         watch: 'a.b',
         time: null
-      });
+      };
+      checkMostRecentCall(1, expectedEvent);
+      scope.$apply();
+      checkMostRecentCall(2, expectedEvent);
+    });
+
+    it('should handle null watchExpression', function() {
+      scope.$watch(null, function() {});
+      expect(hint.emit.calls.count()).toBe(0);
 
       scope.$apply();
-      expect(calls.count()).toBe(2);
-      var evt = calls.mostRecent().args[1].events[0];
-      expect(evt.time).toEqual(jasmine.any(Number));
-      evt.time = null
-      expect(evt).toEqual({
+      var expectedEvent = {
         eventType: 'scope:watch',
         id: scope.$id,
-        watch: 'a.b',
+        watch: null,
         time: null
-      });
-
+      };
+      checkMostRecentCall(1, expectedEvent);
+      scope.$apply();
+      checkMostRecentCall(2, expectedEvent);
     });
 
     if (angular.version.minor >= 3) {
@@ -69,6 +70,17 @@ describe('ngHintScopes', function() {
         expect(calls.count()).toBe(2);
         expect(evt).toBeUndefined();
       });
+    }
+
+    // the event's time property is set to null before comparison with expectedEvent, so callers
+    // should set the time property on expectedEvent to null as well
+    function checkMostRecentCall(expectedCount, expectedEvent){
+      var calls = hint.emit.calls;
+      var evt = calls.mostRecent().args[1].events[0];
+      expect(calls.count()).toBe(expectedCount);
+      expect(evt.time).toEqual(jasmine.any(Number));
+      evt.time = null;
+      expect(evt).toEqual(expectedEvent);
     }
   });
 
