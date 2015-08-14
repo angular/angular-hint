@@ -19,7 +19,7 @@
     "quality"
   ],
   "author": "Brian Ford <btford@umich.edu>",
-  "license": "Apache 2.0",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/angular/angular-hint/issues"
   },
