@@ -5,6 +5,7 @@ env:
   matrix:
     - VERSION=1.2
     - VERSION=1.3
+    - VERSION=1.4
   global:
     - BROWSER_PROVIDER_READY_FILE=/tmp/sauce-connect-ready
     - LOGS_DIR=/tmp/angular-hint-build/logs
