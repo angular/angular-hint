@@ -1210,7 +1210,7 @@ var getFunctionNames = function(str) {
   // To fully fix these issues we would need a full blown expression parser.
   var results = removeStringExp(str.replace(/\s+/g, ''))
     .replace(/\(.*?\)/g, '')
-    .split(/[\+\-\/\|\<\>\^=&!%~;]/g).map(function(x) {
+    .split(/[\+\-\/\|\<\>\^=&!%~?:;]/g).map(function(x) {
       if (isNaN(+x)) {
         if (x.match(/\w+\(.*\)$/)){
           return x.substr(0, x.indexOf('('));
@@ -1246,22 +1246,31 @@ function ngEventDirectivesDecorator(ngEventAttrName) {
 
       return function ngEventHandler(scope, element, attrs) {
         var boundFuncs = getFunctionNames(attrs[ngEventAttrName]);
-        boundFuncs.forEach(function(boundFn) {
-          var property, propChain, lastProp = '';
-          while((property = boundFn.match(/^.+?([^\.\[])*/)) !== null) {
-            property = property[0];
-            propChain = lastProp + property;
-            if ($parse(propChain)(scope) === undefined) {
-              angular.hint.emit(MODULE_NAME + ':undef', propChain + ' is undefined');
+
+        // guard against any parsing errors since the parsing code
+        // to split the expression is pretty simple and naive.
+        try {
+          boundFuncs.forEach(function(boundFn) {
+            var property, propChain, lastProp = '';
+            while((property = boundFn.match(/^.+?([^\.\[])*/)) !== null) {
+              property = property[0];
+              propChain = lastProp + property;
+              if ($parse(propChain)(scope) === undefined) {
+                angular.hint.emit(MODULE_NAME + ':undef', propChain + ' is undefined');
+              }
+              boundFn = boundFn.replace(property, '');
+              lastProp += property;
+              if(boundFn.charAt(0) === '.') {
+                lastProp += '.';
+                boundFn = boundFn.substr(1);
+              }
             }
-            boundFn = boundFn.replace(property, '');
-            lastProp += property;
-            if(boundFn.charAt(0) === '.') {
-              lastProp += '.';
-              boundFn = boundFn.substr(1);
-            }
-          }
-        });
+          });
+        } catch (e) {
+          angular.hint.emit(MODULE_NAME + ':undef', '' +
+            'parsing error: please inform the angular-hint ' +
+            'or batarang teams. expression: ' + boundFuncs.join(''));
+        }
 
         return linkFn.apply(this, arguments);
       };

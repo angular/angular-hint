@@ -36,6 +36,15 @@ describe('hintEvents', function() {
     expect(angular.hint.emit).not.toHaveBeenCalledWith();
   });
 
+  it('should be able to handle ternary expression', function() {
+    var elt = angular.element('<button ng-click="a.b ? a.b() : a">Fake Increment</button>');
+    $rootScope.a = {};
+    $compile(elt)($rootScope);
+
+    $rootScope.$digest();
+    expect(angular.hint.emit).toHaveBeenCalledWith('Events:undef', 'a.b is undefined');
+  });
+
   it('should be able to handle multiple statements separated by a semi colon', function() {
     var elt = angular.element('<button ng-click="a.b.c(); a.b;">Fake Increment</button>');
     var spy = jasmine.createSpy();
