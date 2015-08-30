@@ -3,11 +3,12 @@
 var hint = angular.hint;
 describe('ngHintScopes', function() {
 
-  var $rootScope;
+  var $rootScope, $compile;
 
   beforeEach(module('ngHintScopes'));
-  beforeEach(inject(function(_$rootScope_) {
+  beforeEach(inject(function(_$rootScope_, _$compile_) {
     $rootScope = _$rootScope_;
+    $compile = _$compile_;
   }));
 
   describe('scope.$watch', function() {
@@ -52,23 +53,33 @@ describe('ngHintScopes', function() {
     });
 
     if (angular.version.minor >= 3) {
-      it('should not run perf timers for one time bind expressions', function() {
+      it('should not run perf timers for one time bind expressions passed to watch', function() {
         var calls = hint.emit.calls;
         scope.$watch('::a.b', function() {});
         expect(calls.count()).toBe(0);
 
         scope.$apply();
         var evt = calls.mostRecent().args[1].events[0];
-        // this is the watch angular registers and deregisters on $$postDigest
-        // for one time watch expressions
         expect(calls.count()).toBe(1);
-        expect(evt.eventType).toBe('scope:watch');
-        expect(evt.watch).toBe('oneTimeWatch');
-
-        scope.$apply()
-        var evt = calls.mostRecent().args[1].events[0];
-        expect(calls.count()).toBe(2);
         expect(evt).toBeUndefined();
+      });
+
+      it('should not run perf timers for one time template bindings', function() {
+        var elt = angular.element(
+          '<div>' +
+          '<span>{{::a}}</span>' +
+          '<button ng-click="a = \'bar\'">Set</button>' +
+          '</div>'
+        );
+        scope.a = 'foo';
+        var view = $compile(elt)(scope);
+        scope.$apply();
+        var $binding = view.find('span');
+        var $button = view.find('button');
+
+        $button.triggerHandler('click');
+        scope.$apply();
+        expect($binding.text()).toBe('foo');
       });
     }
 

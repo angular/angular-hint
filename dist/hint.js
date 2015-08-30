@@ -1410,14 +1410,36 @@ function decorateRootScope($delegate, $parse) {
 
   var _watch = scopePrototype.$watch;
   var _digestEvents = [];
+  var skipNextPerfWatchers = false;
   scopePrototype.$watch = function (watchExpression, reactionFunction) {
+    // if `skipNextPerfWatchers` is true, this means the previous run of the
+    // `$watch` decorator was a one time binding expression and this invocation
+    // of the $watch function has the `oneTimeInterceptedExpression` (internal angular function)
+    // as the `watchExpression` parameter. If we decorate it with the performance
+    // timers function this will cause us to invoke `oneTimeInterceptedExpression`
+    // on subsequent digest loops and will update the one time bindings
+    // if anything mutated the property.
+    if (skipNextPerfWatchers) {
+      skipNextPerfWatchers = false;
+      return _watch.apply(this, arguments);
+    }
+
     if (typeof watchExpression === 'string' &&
         isOneTimeBindExp(watchExpression)) {
+      skipNextPerfWatchers = true;
       return _watch.apply(this, arguments);
     }
     var watchStr = humanReadableWatchExpression(watchExpression);
     var scopeId = this.$id;
+    var expressions = null;
     if (typeof watchExpression === 'function') {
+      expressions = watchExpression.expressions;
+      if (Object.prototype.toString.call(expressions) === '[object Array]' &&
+          expressions.some(isOneTimeBindExp)) {
+        skipNextPerfWatchers = true;
+        return _watch.apply(this, arguments);
+      }
+
       arguments[0] = function () {
         var start = perf.now();
         var ret = watchExpression.apply(this, arguments);
