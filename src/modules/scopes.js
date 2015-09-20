@@ -40,7 +40,7 @@ function decorateRootScope($delegate, $parse) {
         value: value
       };
       hint.emit('model:change', {
-        id: scopeId,
+        id: convertIdToOriginalType(scopeId),
         path: partialPath,
         value: value
       });
@@ -247,7 +247,7 @@ function decorateRootScope($delegate, $parse) {
         var value = summarize(model.get());
         if (value !== model.value) {
           hint.emit('model:change', {
-            id: (angular.version.minor < 3) ? scopeId : parseInt(scopeId),
+            id: convertIdToOriginalType(scopeId),
             path: path,
             oldValue: model.value,
             value: value
@@ -336,4 +336,8 @@ function isOneTimeBindExp(exp) {
   // this is the same code angular 1.3.15 has to check
   // for a one time bind expression
   return exp.charAt(0) === ':' && exp.charAt(1) === ':';
+}
+
+function convertIdToOriginalType(scopeId) {
+  return (angular.version.minor < 3) ? scopeId : parseInt(scopeId, 10);
 }

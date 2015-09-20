@@ -363,6 +363,15 @@ describe('ngHintScopes', function() {
       });
     });
 
+    it('should accept an id as a string and return the id in the data type the current angular version uses', function() {
+      hint.watch('' + scope.$id, '');
+
+      expect(hint.emit).toHaveBeenCalled();
+
+      var args = getArgsOfNthCall(0);
+      expect(args[0]).toBe('model:change');
+      expect(args[1].id).toBe(scope.$id);
+    });
   });
 
 
