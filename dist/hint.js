@@ -1048,8 +1048,12 @@ module.exports = function(doms) {
 },{"./getNgAppMod":11,"./inAttrsOrClasses":15,"./moduleData":16,"./storeDependencies":20}],22:[function(require,module,exports){
 var storeDependencies = require('./storeDependencies');
 
+var seen = [];
+
 var storeUsedModules = module.exports = function(module, modules){
-  if(module) {
+  var name = module.name || module;
+  if(module && seen.indexOf(name) === -1) {
+    seen.push(name);
     storeDependencies(module);
     module.requires.forEach(function(modName) {
       var mod = modules[modName];
