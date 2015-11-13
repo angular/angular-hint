@@ -303,6 +303,7 @@ var TYPES = [
 function scopeDescriptor (elt, scope) {
   var val,
       theseTypes = [],
+      noDataDefault = 'scope.$id=' + scope.$id,
       type;
 
   if (elt) {
@@ -313,11 +314,33 @@ function scopeDescriptor (elt, scope) {
       }
     }
   }
-  if (theseTypes.length === 0) {
-    return 'scope.$id=' + scope.$id;
-  } else {
-    return theseTypes.join(' ');
+  if (theseTypes.length) {
+    // We have info from the HTML
+    noDataDefault = theseTypes.join(' ');
+
+    if (theseTypes[0].indexOf(' as ') > -1) {
+      // It's controllerAs
+      var caPrefix = theseTypes[0].match(/ as ([^"]+)"/);
+
+      if (caPrefix && caPrefix[1]) {
+        // We have enough info to make a decision
+        return scope[caPrefix[1]].__ngHintName || noDataDefault;
+      }
+    }
   }
+
+  if (scope.__ngHintName) {
+    // Without controllerAs, we need to check to ensure the name wasn't
+    //   inherited from the parent scope
+    if (scope.$parent) {
+      var sameNameAsParent = scope.__ngHintName === scope.$parent.__ngHintName;
+    }
+
+    // If we have a name, use it, otherwise use the next best thing
+    return sameNameAsParent ?
+      noDataDefault : scope.__ngHintName;
+  }
+  return noDataDefault;
 }
 
 function humanReadableWatchExpression (fn) {
