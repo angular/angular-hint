@@ -1350,7 +1350,9 @@ angular.module = function(name, requiresOriginal) {
 
 angular.module('ngHintModules', []).config(function() {
   var ngAppMod = modules[modData.ngAppMod];
-  storeUsedModules(ngAppMod, modules);
+  if (ngAppMod) {
+    storeUsedModules(ngAppMod, modules);
+  }
   start();
 });
 
