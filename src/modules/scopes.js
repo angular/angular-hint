@@ -142,7 +142,7 @@ function decorateRootScope($delegate, $parse) {
         var end = perf.now();
         _digestEvents.push({
           eventType: 'scope:reaction',
-          id: this.$id,
+          id: scopeId,
           watch: watchStr,
           time: end - start
         });

@@ -52,6 +52,25 @@ describe('ngHintScopes', function() {
       checkMostRecentCall(2, expectedEvent);
     });
 
+    it('should not break when watchAction is called without context', function() {
+      var _watch = scope.$watch;
+      scope.$watch = function(watchExpression, watchAction) {
+        var contextlessWatchAction = watchAction.bind(undefined);
+        return _watch.call(scope, watchExpression, contextlessWatchAction);
+      };
+
+      scope.$watch('a.b', function(newValue) {});
+      expect(hint.emit.calls.count()).toBe(0);
+
+      scope.$digest();
+      checkMostRecentCall(1, {
+        eventType: 'scope:reaction',
+        id: scope.$id,
+        watch: 'a.b',
+        time: null
+      }, 1);
+    });
+
     if (angular.version.minor >= 3) {
       it('should not run perf timers for one time bind expressions passed to watch', function() {
         var calls = hint.emit.calls;
@@ -85,9 +104,9 @@ describe('ngHintScopes', function() {
 
     // the event's time property is set to null before comparison with expectedEvent, so callers
     // should set the time property on expectedEvent to null as well
-    function checkMostRecentCall(expectedCount, expectedEvent){
+    function checkMostRecentCall(expectedCount, expectedEvent, eventIdx){
       var calls = hint.emit.calls;
-      var evt = calls.mostRecent().args[1].events[0];
+      var evt = calls.mostRecent().args[1].events[eventIdx || 0];
       expect(calls.count()).toBe(expectedCount);
       expect(evt.time).toEqual(jasmine.any(Number));
       evt.time = null;
