@@ -4,7 +4,7 @@ Runtime hinting for AngularJS.
 
 ## Usage
 
-Add `<script src="hint.js"></script>` to your app's `index.html` immediately after the
+First build this project (see [Building](#Building) section) with gulp and browserify. Then add the built version `<script src="hint.js"></script>` to your app's `index.html` immediately after the
 `angular.js` script.
 
 This will load the set of AngularHint modules. Now you are set to use the `ng-hint` directive.
@@ -51,12 +51,13 @@ Example:
 ## Building
 
 ```shell
-$ npm install
+$ npm install && ./bower-install.sh
 ```
 
 ```shell
 $ npm run build
 ```
+
 ##Example
   In the `example` directory, you can find a sample application that appears
   superficially correct but violates many Angular best practices. When AngularHint is in operation
