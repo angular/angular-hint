@@ -49,22 +49,22 @@ send us a Pull Request. Following these steps will help us to include your code:
   1. Search the list of [open and closed PRs on AngularHint](https://github.com/angular/angular-hint/pulls)
     or on the module you would like to contribute to in order to make sure that you are not duplicating
     another person's effort.
-  2. Make your changes in a new git branch
+  2. Make your changes in a new git branch:
 
     ```shell
      git checkout -b my-fix-branch master
      ```
-  3. Create your patch,  **including appropriate test cases**
-  4. Follow our [Coding Style Guidelines](#style)
+  3. Create your patch,  **including appropriate test cases**.
+  4. Follow our [Coding Style Guidelines](#style).
   5. Run the AngularHint protractor testing suite using the `gulp` command, or run an AngularHint
     module's unit tests using `karma start`. Ensure that all tests pass.
-  6. Commit your changes using a descriptive commit message that follows our [commit guidelines](#commit)
+  6. Commit your changes using a descriptive commit message that follows our [commit guidelines](#commit):
 
      ```shell
      git commit -a
      ```
     Note: the optional commit `-a` command line option will automatically "add" and "rm" edited files.
-  7. Build your changes locally to ensure all the tests pass
+  7. Build your changes locally to ensure all the tests pass.
     For AngularHint:
 
     ```shell
@@ -81,7 +81,7 @@ send us a Pull Request. Following these steps will help us to include your code:
     ```shell
     git push origin my-fix-branch
     ```
-  9. In GitHub, send a pull request to AngularHint or the appropriate AngularHint module
+  9. In GitHub, send a pull request to AngularHint or the appropriate AngularHint module.
   10. If we suggest changes then:
       - Make the required updates
       - Re-run the tests and ensure they are still passing
