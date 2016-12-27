@@ -358,6 +358,7 @@ function humanReadableWatchExpression (fn) {
 function isOneTimeBindExp(exp) {
   // this is the same code angular 1.3.15 has to check
   // for a one time bind expression
+  exp = exp.trim();
   return exp.charAt(0) === ':' && exp.charAt(1) === ':';
 }
 
