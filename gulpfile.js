@@ -3,6 +3,7 @@ var source = require('vinyl-source-stream');
 var browserify = require('browserify');
 var exec = require('child_process').exec;
 var http = require('http');
+var path = require('path');
 var st = require('st');
 var Router = require('routes-router');
 
@@ -34,7 +35,7 @@ function startServer() {
 
 gulp.task('protractor', ['build', 'webdriver'], function (cb) {
   var server = startServer();
-  var cmd = './node_modules/.bin/protractor protractor' +
+  var cmd = path.resolve(__dirname, 'node_modules/.bin/protractor') + ' protractor' +
       (process.env.TRAVIS_JOB_NUMBER ? '-travis' : '') +
       '.conf.js';
 
@@ -50,7 +51,7 @@ gulp.task('protractor', ['build', 'webdriver'], function (cb) {
 });
 
 gulp.task('webdriver', function (cb) {
-  exec('./node_modules/.bin/webdriver-manager update', cb);
+  exec(path.resolve(__dirname, 'node_modules/.bin/webdriver-manager') + ' update', cb);
 });
 
 gulp.task('test', ['protractor']);
