@@ -12,14 +12,7 @@ Please read and follow our [Code of Conduct](https://github.com/angular/code-of-
 ## <a name="issue"></a> Open an Issue
 
 If you find a bug in AngularHint, you can help us by submitting an issue to our
-[GitHub Repository](https://github.com/angular/angular-hint). If you can trace the issue to a specific AngularHint module, please go
-to the module's repository to submit the issue. The current repositories for AngularHint modules are:
-  - [Angular Hint Controllers](https://github.com/angular/angular-hint-controllers)
-  - [Angular Hint Directives](https://github.com/angular/angular-hint-directives)
-  - [Angular Hint DOM](https://github.com/angular/angular-hint-dom)
-  - [Angular Hint Events](https://github.com/angular/angular-hint-events)
-  - [Angular Hint Interpolation](https://github.com/angular/angular-hint-interpolation)
-  - [Angular Hint Modules](https://github.com/angular/angular-hint-modules)
+[GitHub Repository](https://github.com/angular/angular-hint).
 
 To help us effectively address your issue, please follow these steps:
   1. Use GitHub to search for duplicate issues. If a similar issue already exists, add more
@@ -56,33 +49,21 @@ send us a Pull Request. Following these steps will help us to include your code:
      ```
   3. Create your patch,  **including appropriate test cases**
   4. Follow our [Coding Style Guidelines](#style)
-  5. Run the AngularHint protractor testing suite using the `gulp` command, or run an AngularHint
-    module's unit tests using `karma start`. Ensure that all tests pass.
+  5. Run the AngularHint protractor testing suite using `yarn test-e2e`, or run an AngularHint
+    module's unit tests using `yarn test-unit`. Ensure that all tests pass.
   6. Commit your changes using a descriptive commit message that follows our [commit guidelines](#commit)
 
      ```shell
      git commit -a
      ```
     Note: the optional commit `-a` command line option will automatically "add" and "rm" edited files.
-  7. Build your changes locally to ensure all the tests pass
-    For AngularHint:
-
-    ```shell
-    gulp
-    ```
-
-    For an AngularHint module:
-
-    ```shell
-    karma start
-    ```
-  8. Push your branch to GitHub:
+  7. Push your branch to GitHub:
 
     ```shell
     git push origin my-fix-branch
     ```
-  9. In GitHub, send a pull request to AngularHint or the appropriate AngularHint module
-  10. If we suggest changes then:
+  8. In GitHub, send a pull request to AngularHint.
+  9. If we suggest changes then:
       - Make the required updates
       - Re-run the tests and ensure they are still passing
       - Rebase your branch and force push to your GitHub repository (this will update your PR):
@@ -91,7 +72,7 @@ send us a Pull Request. Following these steps will help us to include your code:
           git rebase master -i
           git push -f
         ```
-  11. After your pull request is merged you can delete your branch an pull the changes from the
+  10. After your pull request is merged you can delete your branch an pull the changes from the
     main repository.
 
       - Delete the remote branch:
@@ -121,8 +102,7 @@ send us a Pull Request. Following these steps will help us to include your code:
 
 ##<a name="style"></a> Coding Style Guidelines
 
-  To help keep the code in AngularHint and the AngularHint modules consistent, please follow
-  these conventions.
+  To help keep the code in AngularHint consistent, please follow these conventions.
 
 ###1. AngularHint Guidelines
 
@@ -138,8 +118,8 @@ send us a Pull Request. Following these steps will help us to include your code:
 
   - All features should be covered by appropriate tests. In AngularHint the e2e tests
   are run through protractor and contained in the `e2e` directory. In individual AngularHint
-  modules the unit tests are run through karma. Check the existing tests in the module you are working
-  with to see the conventions for that module.
+  modules the unit tests are run through karma. Check the existing tests in the module you are
+  working with to see the conventions for that module.
 
 #### Coding
 
