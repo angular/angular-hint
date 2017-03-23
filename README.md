@@ -51,11 +51,11 @@ Example:
 ## Building
 
 ```shell
-$ npm install
+$ yarn install
 ```
 
 ```shell
-$ npm run build
+$ yarn build
 ```
 ##Example
   In the `example` directory, you can find a sample application that appears
