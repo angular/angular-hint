@@ -2,19 +2,14 @@
 SCRIPT_DIR=$(dirname $0)
 cd $SCRIPT_DIR/..
 
-function killServer {
-  kill $serverPid
-}
+# Build
+yarn build
 
-./node_modules/.bin/gulp build
-./node_modules/.bin/gulp serve &
-serverPid=$!
-
-trap killServer EXIT
-
+# Run unit tests
 SAUCE_ACCESS_KEY=`echo $SAUCE_ACCESS_KEY | rev`
+yarn test-unit -- --sauce
 
-#./node_modules/.bin/protractor protractor.conf.js --travis &
-karma start karma.conf.js --sauce &
+# Run e2e tests
+yarn test-e2e
+
 wait %2
-#wait %2 %3
