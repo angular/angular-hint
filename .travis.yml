@@ -1,6 +1,10 @@
+sudo: false
 language: node_js
 node_js:
-  - 0.10
+  - 6
+
+cache: yarn
+
 env:
   matrix:
     - VERSION=1.2
@@ -15,9 +19,8 @@ env:
 install:
   - mkdir -p $LOGS_DIR
   - ./scripts/sauce_connect_setup.sh
-  - npm install -g npm
-  - npm install
-  - ./npm-install.sh
+  - yarn install --ignore-engines
+  - ./scripts/npm-install.sh
   - ./scripts/wait_for_browser_provider.sh
 
 script:
