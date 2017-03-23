@@ -3,13 +3,14 @@ var source = require('vinyl-source-stream');
 var browserify = require('browserify');
 var exec = require('child_process').exec;
 var http = require('http');
+var path = require('path');
 var st = require('st');
 var Router = require('routes-router');
 
 var main = require('./package.json').main;
 
 gulp.task('watch', function() {
-  gulp.watch(['./*.js'], ['browserify', 'protractor']);
+  gulp.watch(['./*.js'], ['protractor']);
 });
 
 gulp.task('browserify', function() {
@@ -28,13 +29,13 @@ function startServer() {
     index: 'index.html'
   }));
   server = http.createServer(app);
-  server.listen(8080);
+  server.listen(9000);
   return server;
 }
 
 gulp.task('protractor', ['build', 'webdriver'], function (cb) {
   var server = startServer();
-  var cmd = './node_modules/.bin/protractor protractor' +
+  var cmd = path.resolve(__dirname, 'node_modules/.bin/protractor') + ' protractor' +
       (process.env.TRAVIS_JOB_NUMBER ? '-travis' : '') +
       '.conf.js';
 
@@ -50,9 +51,9 @@ gulp.task('protractor', ['build', 'webdriver'], function (cb) {
 });
 
 gulp.task('webdriver', function (cb) {
-  exec('./node_modules/.bin/webdriver-manager update', cb);
+  exec(path.resolve(__dirname, 'node_modules/.bin/webdriver-manager') + ' update', cb);
 });
 
-gulp.task('test', ['webdriver', 'protractor']);
+gulp.task('test', ['protractor']);
 gulp.task('build', ['browserify']);
-gulp.task('default', ['build', 'test']);
+gulp.task('default', ['test']);

@@ -1,8 +1,10 @@
 'use strict';
 
+var consoleText = require('./util.protractor');
+
 describe('angularHint', function() {
   it('should include all modules by ng-hint default', function() {
-    browser.get('allHint/');
+    browser.get('all-hint/');
 
     //angular-hint-controllers
     expect(consoleText()).toContain('The best practice is to name ' +
@@ -29,14 +31,14 @@ describe('angularHint', function() {
 
 
   it('should have an inclusive mode', function() {
-    browser.get('inclusiveHint/');
+    browser.get('inclusive-hint/');
     //expect(consoleText())
     //  .toContain('getElementById');
   });
 
   // TODO: fix this assertion
   it('should have an exclusive mode', function() {
-    browser.get('exclusiveHint/');
+    browser.get('exclusive-hint/');
     //expect(consoleText()).toContain('getElementById');
     // expect(consoleText()).toContain('Variable "increment" called on DIV ' +
     //   'element does not exist in that scope.');
@@ -45,12 +47,8 @@ describe('angularHint', function() {
 
 
   it('should warn if there is no ng-hint attribute', function() {
-    browser.get('noHint/');
+    browser.get('no-hint/');
     expect(consoleText())
       .toBe('Angular Hint: General; Warning; ngHint is included on the page, but is not active because there is no `ng-hint` attribute present;');
   });
-
-  function consoleText() {
-    return element(by.id('console')).getText();
-  }
 });

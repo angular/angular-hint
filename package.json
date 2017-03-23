@@ -4,8 +4,11 @@
   "description": "run-time hinting for AngularJS applications",
   "main": "hint.js",
   "scripts": {
-    "test": "gulp",
-    "build": "gulp build"
+    "gulp": "gulp",
+    "build": "gulp build",
+    "serve": "gulp serve",
+    "test-unit": "karma start",
+    "test-e2e": "gulp test"
   },
   "repository": {
     "type": "git",
@@ -25,25 +28,26 @@
   },
   "homepage": "https://github.com/angular/angular-hint",
   "dependencies": {
-    "debounce-on": "0.0.0",
-    "eventemitter2": "^0.4.14",
-    "suggest-it": "0.0.1"
+    "debounce-on": "^0.0.0",
+    "eventemitter2": "^4.0.0",
+    "suggest-it": "^0.0.1"
   },
   "devDependencies": {
-    "angular": "^1.3.14",
-    "angular-mocks": "^1.3.14",
-    "browserify": "^6.1.0",
-    "gulp": "^3.8.9",
-    "http-server": "^0.7.2",
-    "jasmine-core": "^2.1.3",
-    "karma": "^0.12.31",
-    "karma-browserify": "^1.0.1",
-    "karma-chrome-launcher": "^0.1.7",
-    "karma-jasmine": "^0.3.2",
-    "karma-sauce-launcher": "^0.2.10",
-    "protractor": "^1.5.0",
-    "routes-router": "^4.1.1",
-    "st": "^0.5.2",
-    "vinyl-source-stream": "^1.0.0"
+    "angular": "^1.6.3",
+    "angular-mocks": "^1.6.3",
+    "browserify": "^14.1.0",
+    "gulp": "^3.9.1",
+    "http-server": "^0.9.0",
+    "jasmine-core": "^2.5.2",
+    "karma": "^1.5.0",
+    "karma-browserify": "^5.1.1",
+    "karma-chrome-launcher": "^2.0.0",
+    "karma-jasmine": "^1.1.0",
+    "karma-sauce-launcher": "^1.1.0",
+    "protractor": "^5.1.1",
+    "routes-router": "^4.3.0",
+    "st": "^1.2.0",
+    "vinyl-source-stream": "^1.1.0",
+    "watchify": "^3.9.0"
   }
 }

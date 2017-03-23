@@ -1,20 +1,16 @@
 #! /bin/bash
+set -e
+
 SCRIPT_DIR=$(dirname $0)
 cd $SCRIPT_DIR/..
 
-function killServer {
-  kill $serverPid
-}
+# Build
+yarn build --ignore-engines
 
-./node_modules/.bin/gulp build
-./node_modules/.bin/gulp serve &
-serverPid=$!
-
-trap killServer EXIT
-
+# Run unit tests
 SAUCE_ACCESS_KEY=`echo $SAUCE_ACCESS_KEY | rev`
+yarn test-unit --ignore-engines -- --sauce
 
-#./node_modules/.bin/protractor protractor.conf.js --travis &
-karma start karma.conf.js --sauce &
-wait %2
-#wait %2 %3
+# Run e2e tests
+# TODO(gkalpak): Fix e2e tests and re-enable.
+#yarn test-e2e --ignore-engines

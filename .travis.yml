@@ -1,11 +1,17 @@
+sudo: false
 language: node_js
 node_js:
-  - 0.10
+  - 6
+
+cache: yarn
+
 env:
   matrix:
     - VERSION=1.2
     - VERSION=1.3
     - VERSION=1.4
+    - VERSION=1.5
+    - VERSION=1.6
   global:
     - BROWSER_PROVIDER_READY_FILE=/tmp/sauce-connect-ready
     - LOGS_DIR=/tmp/angular-hint-build/logs
@@ -15,10 +21,8 @@ env:
 install:
   - mkdir -p $LOGS_DIR
   - ./scripts/sauce_connect_setup.sh
-  - npm install -g npm
-  - npm install
-  - npm install -g karma-cli
-  - ./npm-install.sh
+  - yarn install --ignore-engines
+  - ./scripts/npm-install.sh
   - ./scripts/wait_for_browser_provider.sh
 
 script:
