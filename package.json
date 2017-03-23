@@ -4,8 +4,11 @@
   "description": "run-time hinting for AngularJS applications",
   "main": "hint.js",
   "scripts": {
-    "test": "gulp",
-    "build": "gulp build"
+    "gulp": "gulp",
+    "build": "gulp build",
+    "serve": "gulp serve",
+    "test-unit": "karma start",
+    "test-e2e": "gulp test"
   },
   "repository": {
     "type": "git",
