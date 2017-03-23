@@ -9,7 +9,7 @@ var Router = require('routes-router');
 var main = require('./package.json').main;
 
 gulp.task('watch', function() {
-  gulp.watch(['./*.js'], ['browserify', 'protractor']);
+  gulp.watch(['./*.js'], ['protractor']);
 });
 
 gulp.task('browserify', function() {
@@ -53,6 +53,6 @@ gulp.task('webdriver', function (cb) {
   exec('./node_modules/.bin/webdriver-manager update', cb);
 });
 
-gulp.task('test', ['webdriver', 'protractor']);
+gulp.task('test', ['protractor']);
 gulp.task('build', ['browserify']);
-gulp.task('default', ['build', 'test']);
+gulp.task('default', ['test']);
