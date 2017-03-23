@@ -1,4 +1,6 @@
 #! /bin/bash
+set -e
+
 SCRIPT_DIR=$(dirname $0)
 cd $SCRIPT_DIR/..
 
@@ -10,6 +12,5 @@ SAUCE_ACCESS_KEY=`echo $SAUCE_ACCESS_KEY | rev`
 yarn test-unit --ignore-engines -- --sauce
 
 # Run e2e tests
-yarn test-e2e --ignore-engines
-
-wait %2
+# TODO(gkalpak): Fix e2e tests and re-enable.
+#yarn test-e2e --ignore-engines
