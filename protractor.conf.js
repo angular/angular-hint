@@ -3,7 +3,7 @@
 var travisConfig = require('./config/protractor.travis.conf');
 
 var options = {
-  baseUrl: 'http://localhost:8080/e2e/',
+  baseUrl: 'http://localhost:9000/e2e/',
 
   capabilities: {
     'browserName': 'chrome'
