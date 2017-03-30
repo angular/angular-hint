@@ -72,33 +72,88 @@ describe('ngHintScopes', function() {
     });
 
     if (angular.version.minor >= 3) {
-      it('should not run perf timers for one time bind expressions passed to watch', function() {
-        var calls = hint.emit.calls;
-        scope.$watch('::a.b', function() {});
-        expect(calls.count()).toBe(0);
+      describe('one-time expressions', function() {
+        // Helpers
+        function countWatchEventsFor(callIdx) {
+          var args = hint.emit.calls.argsFor(callIdx);
+          var events = args[1].events;
+          var watchEvents = events.filter(function(evt) {
+            return evt.eventType === 'scope:watch';
+          });
 
-        scope.$apply();
-        var evt = calls.mostRecent().args[1].events[0];
-        expect(calls.count()).toBe(1);
-        expect(evt).toBeUndefined();
-      });
+          return watchEvents.length;
+        }
 
-      it('should not run perf timers for one time template bindings', function() {
-        var elt = angular.element(
-          '<div>' +
-          '<span>{{::a}}</span>' +
-          '<button ng-click="a = \'bar\'">Set</button>' +
-          '</div>'
-        );
-        scope.a = 'foo';
-        var view = $compile(elt)(scope);
-        scope.$apply();
-        var $binding = view.find('span');
-        var $button = view.find('button');
+        it('should correctly trigger perf timers when passed to `$watch`', function() {
+          var calls = hint.emit.calls;
 
-        $button.triggerHandler('click');
-        scope.$apply();
-        expect($binding.text()).toBe('foo');
+          var reactions = [0, 0, 0];
+          var exps = [
+            '::c.d',
+            '  ::c.d  ',
+            '  ::  c.d  '
+          ].forEach(function(exp, idx) {
+            scope.$watch(exp, function(v) { reactions[idx]++; });
+          });
+
+          expect(calls.count()).toBe(0);
+
+          scope.$apply();
+          expect(calls.count()).toBe(1);
+          expect(countWatchEventsFor(0)).toBe(6);   // First $digest: 2 loops
+          expect(reactions).toEqual([1, 1, 1]);
+
+          calls.reset();
+          scope.$apply();
+          expect(calls.count()).toBe(1);
+          expect(countWatchEventsFor(0)).toBe(3);    // No change: 1 loop
+          expect(reactions).toEqual([1, 1, 1]);
+
+          calls.reset();
+          scope.$apply('c.d = "foo"');
+          expect(calls.count()).toBe(1);
+          expect(countWatchEventsFor(0)).toBe(6);   // Change: 2 loops
+          expect(reactions).toEqual([2, 2, 2]);
+
+          calls.reset();
+          scope.$apply('c.d = "bar"');
+          expect(calls.count()).toBe(1);
+          expect(countWatchEventsFor(0)).toBe(0);   // Already settled: 0 loops
+          expect(reactions).toEqual([2, 2, 2]);
+        });
+
+        it('should correctly trigger perf timers when used in template bindings', function() {
+          var calls = hint.emit.calls;
+
+          $compile(
+            '<div>' +
+              '<span>{{::c.d}}</span>' +
+              '<span>{{  ::c.d  }}</span>' +
+              '<span>{{  ::  c.d  }}</span>' +
+              '<span>{{::c.d}}{{  ::c.d  }}{{  ::  c.d  }}</span>' +
+            '</div>'
+          )(scope);
+
+          calls.reset();
+          scope.$apply();
+          expect(calls.count()).toBe(1);
+          expect(countWatchEventsFor(0)).toBe(12);   // First $digest: 2 loops
+
+          calls.reset();
+          scope.$apply();
+          expect(calls.count()).toBe(1);
+          expect(countWatchEventsFor(0)).toBe(6);    // No change: 1 loop
+
+          calls.reset();
+          scope.$apply('c.d = "foo"');
+          expect(calls.count()).toBe(1);
+          expect(countWatchEventsFor(0)).toBe(12);   // Change: 2 loops
+
+          calls.reset();
+          scope.$apply('c.d = "bar"');
+          expect(calls.count()).toBe(1);
+          expect(countWatchEventsFor(0)).toBe(0);    // Already settled: 0 loops
+        });
       });
     }
 

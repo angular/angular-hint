@@ -79,75 +79,45 @@ function decorateRootScope($delegate, $parse) {
   var _digestEvents = [];
   var skipNextPerfWatchers = false;
   scopePrototype.$watch = function (watchExpression, reactionFunction) {
-    // if `skipNextPerfWatchers` is true, this means the previous run of the
-    // `$watch` decorator was a one time binding expression and this invocation
-    // of the $watch function has the `oneTimeInterceptedExpression` (internal angular function)
-    // as the `watchExpression` parameter. If we decorate it with the performance
-    // timers function this will cause us to invoke `oneTimeInterceptedExpression`
-    // on subsequent digest loops and will update the one time bindings
-    // if anything mutated the property.
-    if (skipNextPerfWatchers) {
-      skipNextPerfWatchers = false;
-      return _watch.apply(this, arguments);
-    }
+    // Convert the `watchExpression` to a function (if not already one).
+    // This is also the first thing `Scope.$watch()` does.
+    var parsedExpression = $parse(watchExpression);
 
-    if (typeof watchExpression === 'string' &&
-        isOneTimeBindExp(watchExpression)) {
-      skipNextPerfWatchers = true;
-      return _watch.apply(this, arguments);
-    }
-    var watchStr = humanReadableWatchExpression(watchExpression);
-    var scopeId = this.$id;
-    var expressions = null;
-    if (typeof watchExpression === 'function') {
-      expressions = watchExpression.expressions;
-      if (Object.prototype.toString.call(expressions) === '[object Array]' &&
-          expressions.some(isOneTimeBindExp)) {
-        skipNextPerfWatchers = true;
-        return _watch.apply(this, arguments);
+    // Only intercept this call if there is no `$$watchDelegate`.
+    // (With `$$watchDelegate` there will be subsequent calls to `$watch` (if necessary)).
+    if (!parsedExpression.$$watchDelegate) {
+      var scopeId = this.$id;
+      var watchStr = humanReadableWatchExpression(watchExpression);
+
+      // Intercept the `watchExpression` (if any).
+      arguments[0] = simpleExtend(function() {
+        var start = perf.now();
+        var ret = parsedExpression.apply(this, arguments);
+        var end = perf.now();
+        _digestEvents.push({
+          eventType: 'scope:watch',
+          id: scopeId,
+          watch: watchStr,
+          time: end - start
+        });
+        return ret;
+      }, parsedExpression);
+
+      // Intercept the `reactionFunction` (if any).
+      if (typeof reactionFunction === 'function') {
+        arguments[1] = function() {
+          var start = perf.now();
+          var ret = reactionFunction.apply(this, arguments);
+          var end = perf.now();
+          _digestEvents.push({
+            eventType: 'scope:reaction',
+            id: scopeId,
+            watch: watchStr,
+            time: end - start
+          });
+          return ret;
+        };
       }
-
-      arguments[0] = function () {
-        var start = perf.now();
-        var ret = watchExpression.apply(this, arguments);
-        var end = perf.now();
-        _digestEvents.push({
-          eventType: 'scope:watch',
-          id: scopeId,
-          watch: watchStr,
-          time: end - start
-        });
-        return ret;
-      };
-    } else {
-      var thatScope = this;
-      arguments[0] = function () {
-        var start = perf.now();
-        var ret = thatScope.$eval(watchExpression);
-        var end = perf.now();
-        _digestEvents.push({
-          eventType: 'scope:watch',
-          id: scopeId,
-          watch: watchStr,
-          time: end - start
-        });
-        return ret;
-      };
-    }
-
-    if (typeof reactionFunction === 'function') {
-      arguments[1] = function () {
-        var start = perf.now();
-        var ret = reactionFunction.apply(this, arguments);
-        var end = perf.now();
-        _digestEvents.push({
-          eventType: 'scope:reaction',
-          id: scopeId,
-          watch: watchStr,
-          time: end - start
-        });
-        return ret;
-      };
     }
 
     return _watch.apply(this, arguments);
@@ -355,12 +325,13 @@ function humanReadableWatchExpression (fn) {
   return fn.toString();
 }
 
-function isOneTimeBindExp(exp) {
-  // this is the same code angular 1.3.15 has to check
-  // for a one time bind expression
-  return exp.charAt(0) === ':' && exp.charAt(1) === ':';
-}
-
 function convertIdToOriginalType(scopeId) {
   return (angular.version.minor < 3) ? scopeId : parseInt(scopeId, 10);
+}
+
+function simpleExtend(dst, src) {
+  Object.keys(src).forEach(function(key) {
+    dst[key] = src[key];
+  });
+  return dst;
 }
