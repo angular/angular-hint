@@ -1,6 +1,6 @@
 {
   "name": "angular-hint",
-  "version": "0.3.8",
+  "version": "0.3.9",
   "description": "run-time hinting for AngularJS applications",
   "main": "hint.js",
   "scripts": {
