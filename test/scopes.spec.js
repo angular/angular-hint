@@ -74,8 +74,16 @@ describe('ngHintScopes', function() {
     if (angular.version.minor >= 3) {
       describe('one-time expressions', function() {
         // Helpers
-        function countWatchEventsFor(callIdx) {
-          var args = hint.emit.calls.argsFor(callIdx);
+        function getDigestCallArgs() {
+          var allArgs = hint.emit.calls.allArgs();
+          var digestCallArgs = allArgs.filter(function(args) {
+            return args[0] === 'scope:digest';
+          });
+
+          return digestCallArgs;
+        }
+
+        function countWatchEvents(args) {
           var events = args[1].events;
           var watchEvents = events.filter(function(evt) {
             return evt.eventType === 'scope:watch';
@@ -86,6 +94,7 @@ describe('ngHintScopes', function() {
 
         it('should correctly trigger perf timers when passed to `$watch`', function() {
           var calls = hint.emit.calls;
+          var args;
 
           var reactions = [0, 0, 0];
           var exps = [
@@ -99,60 +108,83 @@ describe('ngHintScopes', function() {
           expect(calls.count()).toBe(0);
 
           scope.$apply();
-          expect(calls.count()).toBe(1);
-          expect(countWatchEventsFor(0)).toBe(6);   // First $digest: 2 loops
-          expect(reactions).toEqual([1, 1, 1]);
+          args = getDigestCallArgs();
+          expect(args.length).toBe(1);
+          expect(countWatchEvents(args[0])).toBe(6);   // Initial $digest: 2 loops
+          expect(reactions).toEqual([1, 1, 1]);        // Initial $digest always calls listeners
 
           calls.reset();
           scope.$apply();
-          expect(calls.count()).toBe(1);
-          expect(countWatchEventsFor(0)).toBe(3);    // No change: 1 loop
-          expect(reactions).toEqual([1, 1, 1]);
+          args = getDigestCallArgs();
+          expect(args.length).toBe(1);
+          expect(countWatchEvents(args[0])).toBe(3);    // No change: 1 loop
+          expect(reactions).toEqual([1, 1, 1]);         // No change: listeners not called
 
           calls.reset();
           scope.$apply('c.d = "foo"');
-          expect(calls.count()).toBe(1);
-          expect(countWatchEventsFor(0)).toBe(6);   // Change: 2 loops
-          expect(reactions).toEqual([2, 2, 2]);
+          args = getDigestCallArgs();
+          expect(args.length).toBe(1);
+          expect(countWatchEvents(args[0])).toBe(6);   // First change: 2 loops
+          expect(reactions).toEqual([2, 2, 2]);        // First change to defined value calls listeners
 
           calls.reset();
           scope.$apply('c.d = "bar"');
-          expect(calls.count()).toBe(1);
-          expect(countWatchEventsFor(0)).toBe(0);   // Already settled: 0 loops
-          expect(reactions).toEqual([2, 2, 2]);
+          args = getDigestCallArgs();
+          expect(args.length).toBe(1);
+          expect(countWatchEvents(args[0])).toBe(0);   // Already settled: 0 loops
+          expect(reactions).toEqual([2, 2, 2]);        // Already settled: listeners not called
         });
 
         it('should correctly trigger perf timers when used in template bindings', function() {
           var calls = hint.emit.calls;
+          var args;
 
           $compile(
             '<div>' +
+              // Interpolation in node text: 6 bindings (1 + 1 + 1 + 3)
               '<span>{{::c.d}}</span>' +
               '<span>{{  ::c.d  }}</span>' +
               '<span>{{  ::  c.d  }}</span>' +
               '<span>{{::c.d}}{{  ::c.d  }}{{  ::  c.d  }}</span>' +
+
+              // Interpolation in attribute value: 6 bindings (1 + 1 + 1 + 3)
+              '<span class="{{::c.d}}"></span>' +
+              '<span class="{{  ::c.d  }}"></span>' +
+              '<span class="{{  ::  c.d  }}"></span>' +
+              '<span class="{{::c.d}}{{  ::c.d  }}{{  ::  c.d  }}"></span>' +
+
+              // Expressions: 3 bindings (1 + 1 + 1)
+              '<span ng-if="::c.d"></span>' +
+              '<span ng-if="  ::c.d  "></span>' +
+              '<span ng-if="  ::  c.d  "></span>' +
+
+              // Total: 15 watchers (6 + 6 + 3)
             '</div>'
           )(scope);
 
           calls.reset();
           scope.$apply();
-          expect(calls.count()).toBe(1);
-          expect(countWatchEventsFor(0)).toBe(12);   // First $digest: 2 loops
+          args = getDigestCallArgs();
+          expect(args.length).toBe(1);
+          expect(countWatchEvents(args[0])).toBe(30);   // Initial $digest: 2 loops
 
           calls.reset();
           scope.$apply();
-          expect(calls.count()).toBe(1);
-          expect(countWatchEventsFor(0)).toBe(6);    // No change: 1 loop
+          args = getDigestCallArgs();
+          expect(args.length).toBe(1);
+          expect(countWatchEvents(args[0])).toBe(15);   // No change: 1 loop
 
           calls.reset();
           scope.$apply('c.d = "foo"');
-          expect(calls.count()).toBe(1);
-          expect(countWatchEventsFor(0)).toBe(12);   // Change: 2 loops
+          args = getDigestCallArgs();
+          expect(args.length).toBe(1);
+          expect(countWatchEvents(args[0])).toBe(30);   // First change: 2 loops
 
           calls.reset();
           scope.$apply('c.d = "bar"');
-          expect(calls.count()).toBe(1);
-          expect(countWatchEventsFor(0)).toBe(0);    // Already settled: 0 loops
+          args = getDigestCallArgs();
+          expect(args.length).toBe(1);
+          expect(countWatchEvents(args[0])).toBe(0);    // Already settled: 0 loops
         });
       });
     }
