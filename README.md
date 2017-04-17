@@ -57,7 +57,7 @@ $ yarn install
 ```shell
 $ yarn build
 ```
-##Example
+## Example
   In the `example` directory, you can find a sample application that appears
   superficially correct but violates many Angular best practices. When AngularHint is in operation
   it produces hints for correcting the sample application. In the `correctExample` directory
