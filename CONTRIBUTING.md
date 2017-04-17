@@ -100,11 +100,11 @@ send us a Pull Request. Following these steps will help us to include your code:
   12. Celebrate your contribution to AngularHint! Thank you!
 
 
-##<a name="style"></a> Coding Style Guidelines
+## <a name="style"></a> Coding Style Guidelines
 
   To help keep the code in AngularHint consistent, please follow these conventions.
 
-###1. AngularHint Guidelines
+### 1. AngularHint Guidelines
 
 #### Naming
   - AngularHint should be referred to as 'Angular Hint' in titles. In bodies of text it should
@@ -127,7 +127,7 @@ send us a Pull Request. Following these steps will help us to include your code:
   - Instead of complex inheritance heirarchies, use simple objects.
   - Prefer functions and closures to objects.
 
-####<a name="commit"></a> Commit guidelines
+#### <a name="commit"></a> Commit guidelines
 
   Commit messages help us to create a dynamic record of changes to our code. By making
   readable and consistent commit messages, we automatically document our coding decisions.
@@ -182,7 +182,7 @@ send us a Pull Request. Following these steps will help us to include your code:
   The footer should contain any information about **Breaking Changes** and is also the place to
   reference GitHub issues that this commit **Closes**.
 
-###2. <a name="module"></a> AngularHint Module Guidelines
+### 2. <a name="module"></a> AngularHint Module Guidelines
 AngularHint is designed to be a modular tool. This way, independent AngularHint modules can be developed as standalone projects and later included in the overall AngularHint collection. We hope this will encourage the development
 of further AngularHint modules that cover different facets of AngularJS.
 
