@@ -335,3 +335,7 @@ function simpleExtend(dst, src) {
   });
   return dst;
 }
+
+function convertIdToOriginalType(scopeId) {
+  return (angular.version.minor < 3) ? scopeId : parseInt(scopeId, 10);
+}
