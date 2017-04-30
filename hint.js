@@ -5,7 +5,9 @@ require('./src/modules/hintEmitter');
 
 // Load angular hint modules
 require('./src/modules/controllers');
-// require('./src/modules/directives');
+require('./src/modules/directives');
+require('./src/modules/components');
+
 // require('./src/modules/dom');
 require('./src/modules/events');
 // require('./src/modules/interpolation');

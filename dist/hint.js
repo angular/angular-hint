@@ -6,7 +6,9 @@ require('./src/modules/hintEmitter');
 
 // Load angular hint modules
 require('./src/modules/controllers');
-// require('./src/modules/directives');
+require('./src/modules/directives');
+require('./src/modules/components');
+
 // require('./src/modules/dom');
 require('./src/modules/events');
 // require('./src/modules/interpolation');
@@ -121,7 +123,7 @@ var LEVELS = [
   'suggestion'
 ];
 
-},{"./src/modules/controllers":23,"./src/modules/events":24,"./src/modules/hintEmitter":25,"./src/modules/modules":26,"./src/modules/scopes":27}],2:[function(require,module,exports){
+},{"./src/modules/components":24,"./src/modules/controllers":25,"./src/modules/directives":26,"./src/modules/events":27,"./src/modules/hintEmitter":28,"./src/modules/modules":29,"./src/modules/scopes":30}],2:[function(require,module,exports){
 module.exports = function debounceOn (fn, timeout, hash) {
   var timeouts = {};
 
@@ -153,6 +155,7 @@ function defaultHash () {
 }
 
 },{}],3:[function(require,module,exports){
+(function (process){
 /*!
  * EventEmitter2
  * https://github.com/hij1nx/EventEmitter2
@@ -180,7 +183,7 @@ function defaultHash () {
 
       conf.delimiter && (this.delimiter = conf.delimiter);
       this._maxListeners = conf.maxListeners !== undefined ? conf.maxListeners : defaultMaxListeners;
-     
+
       conf.wildcard && (this.wildcard = conf.wildcard);
       conf.newListener && (this.newListener = conf.newListener);
       conf.verboseMemoryLeak && (this.verboseMemoryLeak = conf.verboseMemoryLeak);
@@ -195,18 +198,25 @@ function defaultHash () {
 
   function logPossibleMemoryLeak(count, eventName) {
     var errorMsg = '(node) warning: possible EventEmitter memory ' +
-        'leak detected. %d listeners added. ' +
+        'leak detected. ' + count + ' listeners added. ' +
         'Use emitter.setMaxListeners() to increase limit.';
 
     if(this.verboseMemoryLeak){
-      errorMsg += ' Event name: %s.';
-      console.error(errorMsg, count, eventName);
-    } else {
-      console.error(errorMsg, count);
+      errorMsg += ' Event name: ' + eventName + '.';
     }
 
-    if (console.trace){
-      console.trace();
+    if(typeof process !== 'undefined' && process.emitWarning){
+      var e = new Error(errorMsg);
+      e.name = 'MaxListenersExceededWarning';
+      e.emitter = this;
+      e.count = count;
+      process.emitWarning(e);
+    } else {
+      console.error(errorMsg);
+
+      if (console.trace){
+        console.trace();
+      }
     }
   }
 
@@ -679,7 +689,7 @@ function defaultHash () {
     }else{
       this._all.push(fn);
     }
-    
+
     return this;
   }
 
@@ -719,7 +729,7 @@ function defaultHash () {
       }else{
         this._events[type].push(listener);
       }
-      
+
       // Check for listener leak
       if (
         !this._events[type].warned &&
@@ -923,7 +933,194 @@ function defaultHash () {
   }
 }();
 
-},{}],4:[function(require,module,exports){
+}).call(this,require('_process'))
+},{"_process":4}],4:[function(require,module,exports){
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+},{}],5:[function(require,module,exports){
 module.exports = distance;
 
 function distance(a, b) {
@@ -946,7 +1143,7 @@ function distance(a, b) {
 }
 
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 module.exports = suggestDictionary;
 
 var distance = require('./levenstein_distance');
@@ -969,7 +1166,7 @@ function suggestDictionary(dict, opts) {
 
 suggestDictionary.distance = distance;
 
-},{"./levenstein_distance":4}],6:[function(require,module,exports){
+},{"./levenstein_distance":5}],7:[function(require,module,exports){
 'use strict';
 
 var list = 'click submit mouseenter mouseleave mousemove mousedown mouseover mouseup dblclick keyup keydown keypress blur focus submit cut copy paste'.split(' ');
@@ -978,7 +1175,7 @@ module.exports = list.map(function(eventName) {
   return 'ng' + eventName.charAt(0).toUpperCase() + eventName.substr(1);
 });
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 'use strict';
 
 module.exports = function summarizeModel (model) {
@@ -1015,7 +1212,7 @@ function summarizeProperty (obj) {
       obj;
 }
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 var MODULE_NAME = 'Modules';
 
 module.exports = function(modules) {
@@ -1024,7 +1221,7 @@ module.exports = function(modules) {
   });
 };
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 var modData = require('./moduleData');
   MODULE_NAME = 'Modules',
   SEVERITY_WARNING = 2;
@@ -1046,14 +1243,14 @@ module.exports = function() {
   return multiLoaded;
 };
 
-},{"./moduleData":16}],10:[function(require,module,exports){
+},{"./moduleData":17}],11:[function(require,module,exports){
 var modData = require('./moduleData');
 
 module.exports = function(moduleName, getCreated) {
   return (getCreated)? modData.createdModules[moduleName] : modData.loadedModules[moduleName];
 };
 
-},{"./moduleData":16}],11:[function(require,module,exports){
+},{"./moduleData":17}],12:[function(require,module,exports){
 var MODULE_NAME = 'Modules',
   SEVERITY_ERROR = 1;
  module.exports = function(attrs, ngAppFound) {
@@ -1067,7 +1264,7 @@ var MODULE_NAME = 'Modules',
 
 
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 var getModule = require('./getModule'),
   dictionary = Object.keys(require('./moduleData').createdModules),
   suggest = require('suggest-it')(dictionary),
@@ -1088,7 +1285,7 @@ module.exports = function(loadedModules) {
   return undeclaredModules;
 };
 
-},{"./getModule":10,"./moduleData":16,"suggest-it":5}],13:[function(require,module,exports){
+},{"./getModule":11,"./moduleData":17,"suggest-it":6}],14:[function(require,module,exports){
 var getModule = require('./getModule');
 
 var IGNORED = ['ngHintControllers', 'ngHintDirectives', 'ngHintDom', 'ngHintEvents',
@@ -1109,7 +1306,7 @@ module.exports = function(createdModules) {
   return unusedModules;
 };
 
-},{"./getModule":10}],14:[function(require,module,exports){
+},{"./getModule":11}],15:[function(require,module,exports){
 var MODULE_NAME = 'Modules',
     SEVERITY_SUGGESTION = 3;
 
@@ -1132,7 +1329,7 @@ module.exports = function(str) {
   return true;
 };
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 var normalizeAttribute = require('./normalizeAttribute');
 
 module.exports = function(attrs) {
@@ -1144,14 +1341,14 @@ module.exports = function(attrs) {
   }
 };
 
-},{"./normalizeAttribute":18}],16:[function(require,module,exports){
+},{"./normalizeAttribute":19}],17:[function(require,module,exports){
 module.exports = {
   createdModules: {},
   createdMulti: {},
   loadedModules: {}
 };
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 var modData = require('./moduleData'),
   getModule = require('./getModule');
 
@@ -1161,12 +1358,12 @@ module.exports = function() {
   }
 };
 
-},{"./getModule":10,"./moduleData":16}],18:[function(require,module,exports){
+},{"./getModule":11,"./moduleData":17}],19:[function(require,module,exports){
 module.exports = function(attribute) {
   return attribute.replace(/^(?:data|x)[-_:]/, '').replace(/[:_]/g, '-');
 };
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 var display = require('./display'),
   formatMultiLoaded = require('./formatMultiLoaded'),
   getUnusedModules = require('./getUnusedModules'),
@@ -1189,7 +1386,7 @@ module.exports = function() {
   }
 };
 
-},{"./display":8,"./formatMultiLoaded":9,"./getUndeclaredModules":12,"./getUnusedModules":13,"./moduleData":16,"./ngViewNoNgRoute":17}],20:[function(require,module,exports){
+},{"./display":9,"./formatMultiLoaded":10,"./getUndeclaredModules":13,"./getUnusedModules":14,"./moduleData":17,"./ngViewNoNgRoute":18}],21:[function(require,module,exports){
 var modData = require('./moduleData');
 
 module.exports = function(module, isNgAppMod) {
@@ -1205,7 +1402,7 @@ module.exports = function(module, isNgAppMod) {
   }
 };
 
-},{"./moduleData":16}],21:[function(require,module,exports){
+},{"./moduleData":17}],22:[function(require,module,exports){
 var getNgAppMod = require('./getNgAppMod'),
   inAttrsOrClasses = require('./inAttrsOrClasses'),
   storeDependencies = require('./storeDependencies'),
@@ -1241,7 +1438,7 @@ module.exports = function(doms) {
   }
 };
 
-},{"./getNgAppMod":11,"./inAttrsOrClasses":15,"./moduleData":16,"./storeDependencies":20}],22:[function(require,module,exports){
+},{"./getNgAppMod":12,"./inAttrsOrClasses":16,"./moduleData":17,"./storeDependencies":21}],23:[function(require,module,exports){
 var storeDependencies = require('./storeDependencies');
 
 var seen = [];
@@ -1257,7 +1454,69 @@ var storeUsedModules = module.exports = function(module, modules){
     });
   }
 };
-},{"./storeDependencies":20}],23:[function(require,module,exports){
+},{"./storeDependencies":21}],24:[function(require,module,exports){
+'use strict';
+
+var MODULE_NAME = 'Components';
+
+var SUPPORTED_COMPONENT_OPTIONS = [
+    'bindings',
+    'controller',
+    'controllerAs',
+    'require',
+    'template',
+    'templateUrl',
+    'transclude'
+];
+
+var originalModule = angular.module;
+
+
+angular.module = function moduleDecorator() {
+    var module = originalModule.apply(this, arguments);
+    var originalComponent = module.component;
+    module.component = function componentDecorator(componentName, componentOptions) {
+        verifyComponent(componentName, componentOptions);
+        return originalComponent.apply(this, arguments);
+    };
+
+    return module
+};
+
+function verifyComponent(componentName, componentOptions) {
+    verifyComponentName(componentName);
+    verifyComponentOptions(componentName, componentOptions);
+}
+function verifyComponentName(componentName){
+    if(typeof componentName === 'string'){
+        if(componentName.slice(0,2).toLowerCase() === 'ng'){
+            sendMessageForBadComponentName(componentName);
+        }
+    }
+}
+
+function sendMessageForBadComponentName(componentName){
+    angular.hint.emit(MODULE_NAME, ':rename Consider renaming `' + componentName + '`because only angular directive should start with ng.');
+}
+
+function verifyComponentOptions(componentName, componentOptions) {
+    Object.keys(componentOptions).forEach(function(key){
+        if(!isSupportedComponentOption(key)) {
+            sendMessageForUnSupportedComponentOption(componentName, key);
+        }
+    });
+}
+
+function isSupportedComponentOption(option){
+    return (SUPPORTED_COMPONENT_OPTIONS.indexOf(option) >= 0);
+};
+
+function sendMessageForUnSupportedComponentOption(componentName, componentOption){
+    angular.hint.emit(MODULE_NAME, ':`' + componentOption + '` option is not a supported option for `' + componentName + '`component.');
+}
+
+
+},{}],25:[function(require,module,exports){
 'use strict';
 
 var MODULE_NAME = 'Controllers',
@@ -1382,7 +1641,94 @@ angular.module = function() {
   return module;
 };
 
-},{}],24:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
+'use strict';
+
+
+var MODULE_NAME = 'Directives';
+
+var SUPPORTED_DIRECTIVE_OPTIONS = [
+    'multiElement',
+    'priority',
+    'terminal',
+    'scope',
+    'bindToController',
+    'controller',
+    'require',
+    'controllerAs',
+    'restrict',
+    'templateNamespace',
+    'template',
+    'templateUrl',
+    'replace',
+    'transclude',
+    'compile',
+    'link'
+];
+
+var originalModule = angular.module;
+
+
+angular.module = function moduleDecorator(){
+    var module = originalModule.apply(this, arguments);
+    var originalDirective = module.directive;
+
+    module.directive = function directiveDecorator(directiveName, options) {
+        var directiveFactory;
+        if (typeof directiveName === 'string') {
+            if (Array.isArray(options) && options.length > 0) {
+                directiveFactory = options[options.length - 1];
+            } else {
+                directiveFactory = options;
+            }
+            verifyDirective(directiveName, directiveFactory);
+        } else if (typeof directiveName === 'object') {
+            Object.keys(directiveName).forEach(function (key) {
+                directiveFactory = directiveName[key];
+                verifyDirective(key, directiveFactory);
+            });
+        }
+        return originalDirective.apply(this, arguments);
+    };
+
+    return module;
+};
+
+
+function verifyDirective(directiveName, directiveFactory) {
+    verifyDirectiveName(directiveName);
+    verifyDirectiveOptions(directiveName, directiveFactory);
+}
+function verifyDirectiveName(directiveName){
+    if(typeof directiveName === 'string'){
+        if(directiveName.slice(0,2).toLowerCase() === 'ng'){
+            sendMessageForBadDirectiveName(directiveName);
+        }
+    }
+}
+
+function sendMessageForBadDirectiveName(directiveName){
+    angular.hint.emit(MODULE_NAME, ':rename Consider renaming `' + directiveName + '`because only angular directive should start with ng.');
+}
+
+function verifyDirectiveOptions(directiveName, directiveFactory) {
+    var options = directiveFactory.call();
+    Object.keys(options).forEach(function(key){
+        if(!isSupportedDirectiveOption(key)) {
+            sendMessageForUnSupportedDirectiveOption(directiveName, key);
+        }
+    });
+}
+
+function isSupportedDirectiveOption(option){
+  return (SUPPORTED_DIRECTIVE_OPTIONS.indexOf(option) >= 0);
+};
+
+function sendMessageForUnSupportedDirectiveOption(directiveName, directiveOption){
+    angular.hint.emit(MODULE_NAME, ':`' + directiveOption + '` option is not a supported option for `' + directiveName + '`directive.');
+}
+
+},{}],27:[function(require,module,exports){
 'use strict';
 
 /**
@@ -1490,7 +1836,7 @@ function ngEventDirectivesDecorator(ngEventAttrName) {
   }
 }
 
-},{"../lib/event-directives":6}],25:[function(require,module,exports){
+},{"../lib/event-directives":7}],28:[function(require,module,exports){
 'use strict';
 
 /**
@@ -1504,7 +1850,7 @@ angular.hint = new EventEmitter2({
   wildcard: true,
   delimiter: ':'
 });
-},{"eventemitter2":3}],26:[function(require,module,exports){
+},{"eventemitter2":3}],29:[function(require,module,exports){
 'use strict';
 
 var getModule = require('./angular-hint-modules/getModule'),
@@ -1552,7 +1898,7 @@ angular.module('ngHintModules', []).config(function() {
   start();
 });
 
-},{"./angular-hint-modules/getModule":10,"./angular-hint-modules/hasNameSpace":14,"./angular-hint-modules/moduleData":16,"./angular-hint-modules/start":19,"./angular-hint-modules/storeNgAppAndView":21,"./angular-hint-modules/storeUsedModules":22}],27:[function(require,module,exports){
+},{"./angular-hint-modules/getModule":11,"./angular-hint-modules/hasNameSpace":15,"./angular-hint-modules/moduleData":17,"./angular-hint-modules/start":20,"./angular-hint-modules/storeNgAppAndView":22,"./angular-hint-modules/storeUsedModules":23}],30:[function(require,module,exports){
 'use strict';
 
 var summarize = require('../lib/summarize-model');
@@ -1891,4 +2237,4 @@ function simpleExtend(dst, src) {
   return dst;
 }
 
-},{"../lib/summarize-model":7,"debounce-on":2}]},{},[1]);
+},{"../lib/summarize-model":8,"debounce-on":2}]},{},[1]);
