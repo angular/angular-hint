@@ -46,19 +46,26 @@ if (deferRegex.test(window.name)) {
 }
 //If this is not a test, defer bootstrapping
 else {
+  var isDeferLabelRemoved = false;
   window.name = DEFER_LABEL + window.name;
 
   // determine which modules to load and resume bootstrap
   document.addEventListener('DOMContentLoaded', maybeBootstrap);
 
-  /* angular should remove DEFER_LABEL from window.name, but if angular is never loaded, we want
-   to remove it ourselves, otherwise hint will incorrectly detect protractor as being present on
-   the next page load */
-  window.addEventListener('beforeunload', function() {
-    if (deferRegex.test(window.name)) {
+  // AngularJS should remove `DEFER_LABEL` from `window.name`, but if AngularJS is never loaded,
+  // we want to remove it ourselves. Otherwise `hint` will incorrectly detect protractor as being
+  // present on the next page load.
+  // Generally, the `unload` event is fired more consistently, but we also use `beforeunload` to
+  // cover potential browser bugs/edge-cases.
+  window.addEventListener('unload', removeDeferLabelOnce);
+  window.addEventListener('beforeunload', removeDeferLabelOnce);
+
+  function removeDeferLabelOnce() {
+    if (!isDeferLabelRemoved && deferRegex.test(window.name)) {
       window.name = window.name.substring(DEFER_LABEL.length);
+      isDeferLabelRemoved = true;
     }
-  });
+  }
 }
 
 function maybeBootstrap() {
