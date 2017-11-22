@@ -1,6 +1,6 @@
 {
   "name": "angular-hint",
-  "version": "0.3.9",
+  "version": "0.3.10",
   "description": "run-time hinting for AngularJS applications",
   "main": "hint.js",
   "scripts": {
@@ -30,11 +30,11 @@
   "dependencies": {
     "debounce-on": "^0.0.0",
     "eventemitter2": "^4.0.0",
-    "suggest-it": "^0.0.1"
+    "suggest-it": "^0.0.2"
   },
   "devDependencies": {
-    "angular": "^1.6.3",
-    "angular-mocks": "^1.6.3",
+    "angular": "^1.6.6",
+    "angular-mocks": "^1.6.6",
     "browserify": "^14.1.0",
     "gulp": "^3.9.1",
     "http-server": "^0.9.0",
