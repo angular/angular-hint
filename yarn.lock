@@ -62,13 +62,13 @@ ajv@^4.9.1:
     co "^4.6.0"
     json-stable-stringify "^1.0.1"
 
-angular-mocks@^1.6.3:
-  version "1.6.3"
-  resolved "https://registry.yarnpkg.com/angular-mocks/-/angular-mocks-1.6.3.tgz#12fafc0f1e0903f16864004ba375bf3fb9101ef1"
+angular-mocks@^1.6.6:
+  version "1.6.6"
+  resolved "https://registry.yarnpkg.com/angular-mocks/-/angular-mocks-1.6.6.tgz#c93018e7838c6dc5ceaf1a6bcf9be13c830ea515"
 
-angular@^1.6.3:
-  version "1.6.3"
-  resolved "https://registry.yarnpkg.com/angular/-/angular-1.6.3.tgz#5d34b799234e8fa17c6a3a14e0258733935f43e7"
+angular@^1.6.6:
+  version "1.6.6"
+  resolved "https://registry.yarnpkg.com/angular/-/angular-1.6.6.tgz#fd5a3cfb437ce382d854ee01120797978527cb64"
 
 ansi-regex@^2.0.0:
   version "2.1.1"
@@ -3151,9 +3151,9 @@ subarg@^1.0.0:
   dependencies:
     minimist "^1.1.0"
 
-suggest-it@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/suggest-it/-/suggest-it-0.0.1.tgz#bcbd79c299af7b8aa188fcc8abb6d4406136a74c"
+suggest-it@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/suggest-it/-/suggest-it-0.0.2.tgz#8621b38f3a066e96f2171f600c198c8f94f53167"
 
 supports-color@^2.0.0:
   version "2.0.0"
